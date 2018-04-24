@@ -1,0 +1,590 @@
+Lesson 4
+========================================================
+
+***
+
+```{r}
+library(ggplot2) #must load the ggplot package first
+data(diamonds) #loads the diamonds data set since it comes with the ggplot package
+summary(diamonds)
+str(diamonds)
+levels(diamonds$color)
+?diamonds
+```
+
+***
+
+```{r}
+qplot(
+  data = diamonds,
+  x = price
+)
+```
+
+***
+
+```{r}
+summary(diamonds$price)
+```
+
+```{r}
+str(subset(diamonds, price >= 15000)$price)
+```
+
+***
+
+```{r}
+qplot(
+  data = diamonds,
+  x = price,
+  binwidth = 20
+) +
+  scale_x_continuous(breaks = seq(300, 1600, 50), limits = c(300, 1600))
+```
+
+***
+
+```{r}
+qplot(
+  data = diamonds,
+  x = price
+) +
+  facet_wrap(~cut, ncol = 1, scales = "free_y")
+?facet_wrap
+```
+
+```{r}
+by(diamonds$price, diamonds$cut, summary)
+```
+
+***
+
+```{r}
+qplot(
+  data = diamonds,
+  x = price / carat,
+  binwidth = 0.03
+) +
+  facet_wrap(~cut, ncol = 1, scales = "free_y") +
+  scale_x_log10()
+```
+
+```{r}
+names(diamonds)
+boxplot(
+  price~color,
+  data = diamonds
+)
+```
+
+***
+
+```{r}
+by(diamonds$price, diamonds$color, summary)
+```
+
+```{r}
+7695 - 1860
+```
+
+```{r}
+4214 - 911
+```
+
+***
+
+```{r}
+boxplot(
+  price~color,
+  data = diamonds
+)
+```
+
+***
+
+```{r}
+qplot(
+  data = diamonds,
+  x = carat,
+  binwidth = 0.01
+) +
+  scale_x_continuous(breaks = seq(0, 2, 0.1), limits = c(0, 2))
+```
+
+***
+
+### Scatterplots and Perceived Audience Size
+Notes:
+
+*****
+
+```{r}
+install.packages(c("dplyr", "tidyr"))
+library(dplyr)
+library(tidyr)
+```
+
+```{r}
+mm <- read.csv(
+  'murdered male indicator file UL 20100916 - Data.csv',
+  header = T,
+  row.names = 1,
+  check.names = F)
+```
+
+```{r}
+mm[1:2,1:2]
+str(mm)
+rownames(mm)
+mmc <- mm %>% 
+  mutate(country = rownames(mm)) %>% 
+  gather('year', 'pp', 1:55)
+```
+
+```{r}
+arrange(mmc, desc(pp))
+
+mts <- mmc %>% facet_wrap(~country) %>% ts(start=c(1950), end=c(2004), frequency=1)
+plot(mts)
+
+mmc %>% ggplot(aes(x=year, y=pp), color=country) +    geom_line()
+    # facet_wrap(~country, ncol = 1)
+```
+
+*****
+
+```{r}
+birthdays <- read.csv('birthdaysExample.csv')
+
+
+qplot(
+  data = birthdays,
+  x = as.Date(dates, '%m/%d/%y'),
+  binwidth = 7 # = 60 * 60 * 24 * 7
+) # + scale_x_date(breaks = seq(0, 365, 1))
+```
+
+***
+
+```{r}
+library(ggplot2)
+
+pf <- read.csv('pseudo_facebook.tsv', sep = '\t')
+```
+
+### Scatterplots
+Notes:
+
+```{r Scatterplots}
+qplot(
+  data = pf,
+  x = age,
+  y = friend_count
+)
+```
+
+***
+
+#### What are some things that you notice right away?
+Response:
+
+***
+
+### ggplot Syntax
+Notes:
+
+```{r ggplot Syntax}
+ggplot(
+  aes(x = age, y = friend_count),
+  data = pf
+) +
+  geom_point() +
+  xlim(13, 90)
+```
+
+***
+
+### Overplotting
+Notes:
+
+```{r Overplotting}
+ggplot(
+  aes(x = age, y = friend_count),
+  data = pf
+) +
+  geom_point(alpha = 1 / 20) +
+  xlim(13, 90)
+```
+
+#### What do you notice in the plot?
+Response:
+
+***
+
+### Coord_trans()
+Notes:
+
+```{r Coord_trans()}
+ggplot(
+  aes(x = age, y = friend_count),
+  data = pf
+) +
+  geom_point(alpha = 1 / 20) +
+  xlim(13, 90) +
+  coord_trans(y = 'sqrt')
+```
+
+#### Look up the documentation for coord_trans() and add a layer to the plot that transforms friend_count using the square root function. Create your plot!
+
+```{r}
+ggplot(
+  aes(y = friendships_initiated, x = age),
+  data = pf
+) +
+  geom_point(alpha = 1 / 20) +
+  xlim(13, 90) +
+  coord_trans(y = 'sqrt')
+```
+
+#### What do you notice?
+
+***
+
+### Alpha and Jitter
+Notes:
+
+```{r Alpha and Jitter}
+ggplot(
+  aes(x = age, y = friend_count),
+  data = pf
+) +
+  geom_jitter(alpha = 1 / 20) +
+  xlim(13, 90)
+```
+
+***
+
+```{r}
+library(dplyr)
+```
+
+```{r}
+pf.summary.by.age <- pf %>%
+  group_by(age) %>%
+  summarise(
+    friend.count.mean = mean(friend_count),
+    friend.count.median = median(friend_count),
+    n = n()
+  )
+```
+
+```{r}
+ggplot(
+  data = pf.summary.by.age,
+  aes(x = age, y = friend.count.mean)
+) +
+  geom_line() +
+  xlim(12, 90)
+```
+
+***
+
+```{r}
+ggplot(
+  data = pf,
+  aes(x = age, y = friend_count)
+) +
+  geom_point(alpha = 0.05, color = 'orange') +
+  xlim(13, 90) +
+  coord_trans(y = 'sqrt') +
+  geom_line(stat = 'summary', fun.y = mean) +
+  geom_line(stat = 'summary', fun.y = quantile, fun.args = list(probs = 0.1), linetype = 2, color = 'blue') +
+  geom_line(stat = 'summary', fun.y = quantile, fun.args = list(probs = 0.9), linetype = 2, color = 'blue') +
+  geom_line(stat = 'summary', fun.y = quantile, fun.args = list(probs = 0.5), color = 'blue')
+```
+
+```{r}
+ggplot(
+  data = pf,
+  aes(x = age, y = friend_count)
+) +
+  geom_point(alpha = 0.05, color = 'orange') +
+  coord_cartesian(xlim = c(13, 70), ylim = c(0, 1000)) +
+  geom_line(stat = 'summary', fun.y = mean) +
+  geom_line(stat = 'summary', fun.y = quantile, fun.args = list(probs = 0.1), linetype = 2, color = 'blue') +
+  geom_line(stat = 'summary', fun.y = quantile, fun.args = list(probs = 0.9), linetype = 2, color = 'blue') +
+  geom_line(stat = 'summary', fun.y = quantile, fun.args = list(probs = 0.5), color = 'blue')
+```
+
+***
+
+### Overplotting and Domain Knowledge
+Notes:
+
+***
+
+### Conditional Means
+Notes:
+
+```{r Conditional Means}
+
+```
+
+Create your plot!
+
+```{r Conditional Means Plot}
+
+```
+
+***
+
+### Overlaying Summaries with Raw Data
+Notes:
+
+```{r Overlaying Summaries with Raw Data}
+
+```
+
+#### What are some of your observations of the plot?
+Response:
+
+***
+
+### Moira: Histogram Summary and Scatterplot
+See the Instructor Notes of this video to download Moira's paper on perceived audience size and to see the final plot.
+
+Notes:
+
+***
+
+### Correlation
+Notes:
+
+```{r Correlation}
+cor.test(
+  x = pf$age,
+  y = pf$friend_count,
+  method = "pearson",
+  alternative = "two.sided"
+)
+```
+
+Look up the documentation for the cor.test function.
+
+What's the correlation between age and friend count? Round to three decimal places.
+Response:
+
+***
+
+### Correlation on Subsets
+Notes:
+
+```{r Correlation on Subsets}
+with(subset(pf, age <= 70), cor.test(age, friend_count))
+```
+
+***
+
+### Correlation Methods
+Notes:
+
+***
+
+## Create Scatterplots
+Notes:
+
+```{r}
+ggplot(
+  data = pf,
+  aes(x = likes_received, y = www_likes_received)
+) +
+  geom_point(alpha = 0.05) +
+  coord_cartesian(
+    xlim = c(0, quantile(pf$likes_received, 0.95)),
+    ylim = c(0, quantile(pf$www_likes_received, 0.95))
+  )
+```
+
+***
+
+### Strong Correlations
+Notes:
+
+```{r Strong Correlations}
+
+```
+
+What's the correlation betwen the two variables? Include the top 5% of values for the variable in the calculation and round to 3 decimal places.
+
+```{r Correlation Calcuation}
+cor.test(
+  x = pf$www_likes_received,
+  y = pf$likes_received
+)
+```
+
+Response:
+
+***
+
+### Moira on Correlation
+Notes:
+
+***
+
+### More Caution with Correlation
+Notes:
+
+```{r More Caution With Correlation}
+install.packages('alr3')
+library(alr3)
+data("Mitchell")
+?Mitchell
+head(Mitchell)
+```
+
+Create your plot!
+
+```{r Temp vs Month}
+ggplot(
+  data = Mitchell,
+  aes(x = Month, y = Temp)
+) +
+  geom_point(alpha = 0.5)
+```
+
+```{r}
+cor.test(
+  x = Mitchell$Month,
+  y = Mitchell$Temp
+)
+```
+
+```{r}
+###: TODO wrap plot ###
+ggplot(
+  data = Mitchell,
+  aes(
+    x = Month %% 12,
+    y = Temp
+  )
+) +
+  geom_point(alpha = 0.5)
+
+```
+
+***
+
+### Noisy Scatterplots
+a. Take a guess for the correlation coefficient for the scatterplot.
+
+b. What is the actual correlation of the two variables?
+(Round to the thousandths place)
+
+```{r}
+pf$age_with_months <- pf$age + (1 - pf$dob_month / 12)
+```
+
+```{r Noisy Scatterplots}
+ggplot(
+  data = pf,
+  aes(x = age_with_months, y = friend_count)
+) +
+  geom_line(stat = 'summary', fun.y = mean)
+```
+
+```{r}
+pf.fc_by_age_months <- pf %>%
+  arrange(age_with_months) %>%
+  group_by(age_with_months) %>%
+  summarise(
+    friend_count_mean = mean(friend_count),
+    friend_count_median = median(friend_count),
+    n = n()
+  )
+```
+
+```{r}
+ggplot(
+  data = pf.fc_by_age_months,
+  aes(x = age_with_months, y = friend_count_mean)
+) +
+  geom_line(color = 'orange') +
+  geom_smooth() +
+  xlim(13, 71) +
+  ylim(0, 450)
+```
+
+***
+
+### Making Sense of Data
+Notes:
+
+```{r Making Sense of Data}
+
+```
+
+***
+
+### A New Perspective
+
+What do you notice?
+Response:
+
+Watch the solution video and check out the Instructor Notes!
+Notes:
+
+***
+
+### Understanding Noise: Age to Age Months
+Notes:
+
+```{r Understanding Noise: Age to Age Months}
+
+```
+
+***
+
+### Age with Months Means
+
+```{r Age with Months Means}
+
+```
+
+Programming Assignment
+```{r Programming Assignment}
+
+```
+
+***
+
+### Noise in Conditional Means
+
+```{r Noise in Conditional Means}
+
+```
+
+***
+
+### Smoothing Conditional Means
+Notes:
+
+```{r Smoothing Conditional Means}
+
+```
+
+***
+
+### Which Plot to Choose?
+Notes:
+
+***
+
+### Analyzing Two Variables
+Reflection:
+
+***
+
+Click **KnitHTML** to see all of your hard work and to have an html
+page of this lesson, your answers, and your notes!
+

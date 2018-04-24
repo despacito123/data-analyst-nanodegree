@@ -1,0 +1,6 @@
+"0","qplot("
+"0","  data = diamonds,"
+"0","  x = price,"
+"0","  binwidth = 20"
+"0",") +"
+"0","  scale_x_continuous(breaks = seq(300, 1600, 50), limits = c(300, 1600))"

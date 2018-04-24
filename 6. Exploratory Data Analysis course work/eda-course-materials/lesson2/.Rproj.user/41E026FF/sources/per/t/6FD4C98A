@@ -1,0 +1,22 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1522254912311.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "988017658",
+    "id" : "6FD4C98A",
+    "lastKnownWriteTime" : 1522827794,
+    "last_content_update" : 1522827794696,
+    "path" : "~/OneDrive/Udacity/Data Analyst Nano Degree/eda-course-materials/lesson2/demystifying.R",
+    "project_path" : "demystifying.R",
+    "properties" : {
+        "cursorPosition" : "260,0",
+        "scrollLine" : "238"
+    },
+    "relative_order" : 1,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

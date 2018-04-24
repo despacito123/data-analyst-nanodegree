@@ -1,0 +1,22 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1522743837341.000,
+    "dirty" : true,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "4072051285",
+    "id" : "54D23281",
+    "lastKnownWriteTime" : 1522774685,
+    "last_content_update" : 1522774713509,
+    "path" : "~/OneDrive/Udacity/Data Analyst Nano Degree/eda-course-materials/lesson2/demystifyingR2.Rmd",
+    "project_path" : "demystifyingR2.Rmd",
+    "properties" : {
+        "cursorPosition" : "151,2",
+        "scrollLine" : "149"
+    },
+    "relative_order" : 4,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_markdown"
+}

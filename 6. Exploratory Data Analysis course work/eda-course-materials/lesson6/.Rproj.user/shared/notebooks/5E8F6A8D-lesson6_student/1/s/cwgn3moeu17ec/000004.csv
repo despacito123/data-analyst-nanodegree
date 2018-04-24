@@ -1,0 +1,10 @@
+"0","ggpairs(
+  diamond_samp,
+  lower = list(continuous = wrap(""points"", shape = I('.'))),
+  upper = list(combo = wrap(""box"", outlier.shape = I('.')))
+)
+"
+"2","Error in stop_if_high_cardinality(data, columns, cardinality_threshold) : 
+  Column 'measurements' has more levels (241453) than the threshold (15) allowed.
+Please remove the column or increase the 'cardinality_threshold' parameter. Increasing the cardinality_threshold may produce long processing times
+"

@@ -1,0 +1,22 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1524423325620.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "3385763685",
+    "id" : "245E8883",
+    "lastKnownWriteTime" : 1524425886,
+    "last_content_update" : 1524425886142,
+    "path" : "~/OneDrive/Udacity/Data Analyst Nano Degree/eda-course-materials/lesson6/lesson6_student.rmd",
+    "project_path" : "lesson6_student.rmd",
+    "properties" : {
+        "cursorPosition" : "81,0",
+        "scrollLine" : "68"
+    },
+    "relative_order" : 1,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_markdown"
+}
