@@ -489,6 +489,16 @@ ggplot(
   geom_boxplot()
 ```
 
+```{r echo=FALSE}
+ggplot(
+  data = loans,
+  aes(x = ListingCategory)
+) +
+  geom_bar(aes(fill = IsBorrowerHomeowner), position = "dodge") +
+  scale_y_sqrt(breaks = seq(0, max(loans$LoanOriginalAmount), 5000)) +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
+```
+
 # Bivariate Analysis
 
 > **Tip**: As before, summarize what you found in your bivariate explorations
@@ -568,7 +578,13 @@ ggplot(
   theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
 ```
 
-
+```{r echo=FALSE}
+ggplot(
+  data = loans,
+  aes(x = CreditGrade.ProsperRating, y = LoanOriginalAmount)
+) +
+  geom_boxplot(aes(colour = IsBorrowerHomeowner), position = "dodge")
+```
 
 # Multivariate Analysis
 
