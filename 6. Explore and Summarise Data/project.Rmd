@@ -1,9 +1,5 @@
-TITLE by YOUR_NAME_HERE
+# Loan Data from Prosper Exploration by Justinas Marozas
 ========================================================
-
-> **Tip**: You will see quoted sections like this throughout the template to
-help you construct your report. Make sure that you remove these notes before
-you finish and submit your project!
 
 > **Tip**: One of the requirements of this project is that your code follows
 good formatting techniques, including limiting your lines to 80 characters or
@@ -38,7 +34,13 @@ loans <- read.csv('prosperLoanData.csv')
 
 ```{r echo=FALSE, Tidy_up}
 
-# The category of the listing that the borrower selected when posting their listing: 0 - Not Available, 1 - Debt Consolidation, 2 - Home Improvement, 3 - Business, 4 - Personal Loan, 5 - Student Use, 6 - Auto, 7- Other, 8 - Baby&Adoption, 9 - Boat, 10 - Cosmetic Procedure, 11 - Engagement Ring, 12 - Green Loans, 13 - Household Expenses, 14 - Large Purchases, 15 - Medical/Dental, 16 - Motorcycle, 17 - RV, 18 - Taxes, 19 - Vacation, 20 - Wedding Loans
+# The category of the listing that the borrower selected when posting their 
+# listing: 0 - Not Available, 1 - Debt Consolidation, 2 - Home Improvement, 
+# 3 - Business, 4 - Personal Loan, 5 - Student Use, 6 - Auto, 7- Other, 
+# 8 - Baby&Adoption, 9 - Boat, 10 - Cosmetic Procedure, 11 - Engagement Ring, 
+# 12 - Green Loans, 13 - Household Expenses, 14 - Large Purchases, 
+# 15 - Medical/Dental, 16 - Motorcycle, 17 - RV, 18 - Taxes, 19 - Vacation, 
+# 20 - Wedding Loans
 
 ListingCategory.levels = 1:20
 ListingCategory.labels = c(
@@ -65,6 +67,10 @@ ListingCategory.labels = c(
   "Wedding Loans"
 )
 
+# split Q from Y and reverse to Y Q
+# order by Y and Q
+# reverse back to Q Y and join
+# use later to get a chronologically ordered factor
 loan.origination.quarter.levels <- levels(loans$LoanOriginationQuarter) %>%
   strsplit(' ') %>%
   lapply(rev) %>%
@@ -450,7 +456,7 @@ ggplot(
 
 ```{r echo=FALSE}
 ggplot(
-  data = loans,
+  data = subset(loans, !is.na(ListingCategory)),
   aes(x = ListingCategory, y = LoanOriginalAmount)
 ) +
   geom_boxplot() +
@@ -491,7 +497,7 @@ ggplot(
 
 ```{r echo=FALSE}
 ggplot(
-  data = loans,
+  data = subset(loans, !is.na(ListingCategory)),
   aes(x = ListingCategory)
 ) +
   geom_bar(aes(fill = IsBorrowerHomeowner), position = "dodge") +
@@ -549,7 +555,11 @@ ggplot(
 
 ```{r echo=FALSE}
 ggplot(
-  data = subset(loans, Investors <= quantile(Investors, 0.99) & !is.na(CreditGrade.ProsperRating)),
+  data = subset(
+    loans,
+    Investors <= quantile(Investors, 0.99)
+    & !is.na(CreditGrade.ProsperRating)
+  ),
   aes(x = CreditGrade.ProsperRating, y = LoanOriginalAmount)
 ) +
   geom_jitter(aes(colour = Investors)) +
@@ -569,7 +579,11 @@ ggplot(
 
 ```{r echo=FALSE}
 ggplot(
-  data = subset(loans, Investors <= quantile(Investors, 0.99) & !is.na(ListingCategory)),
+  data = subset(
+    loans,
+    Investors <= quantile(Investors, 0.99)
+    & !is.na(ListingCategory)
+  ),
   aes(x = ListingCategory, y = LoanOriginalAmount)
 ) +
   geom_jitter(aes(colour = Investors)) +
@@ -580,7 +594,7 @@ ggplot(
 
 ```{r echo=FALSE}
 ggplot(
-  data = loans,
+  data = subset(loans, !is.na(CreditGrade.ProsperRating)),
   aes(x = CreditGrade.ProsperRating, y = LoanOriginalAmount)
 ) +
   geom_boxplot(aes(colour = IsBorrowerHomeowner), position = "dodge")
