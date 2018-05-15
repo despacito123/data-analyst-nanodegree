@@ -1,10 +1,38 @@
-# Loan Data from Prosper Exploration by Justinas Marozas
-========================================================
 
-> **Tip**: One of the requirements of this project is that your code follows
-good formatting techniques, including limiting your lines to 80 characters or
-less. If you're using RStudio, go into Preferences \> Code \> Display to set up
-a margin line to help you keep track of this guideline!
+Loan Data from Prosper Exploration by Justinas Marozas
+======================================================
+
+This report explores loan data from Prosper with 113937 observations and 81 
+data points extracted. As of time of writing, brief descriptions of data 
+points can be found [here](https://docs.google.com/spreadsheets/d/1gDyi_L4UvIrLTEC6Wri5nbaMmkGmLQBk-Yx3z0XDEtI/edit#gid=0).
+
+
+## Changes to the dataset and considerations
+
+- Loans as a domain is largely unknown to me. With 81 odd datapoint to figure 
+out this report will be more of a lookaround than a focussed analysis;
+- An observation in the dataset is a snapshot of a loan listing. Time series 
+analysis of a listing is not an option, but grouping by MemberKey it would be 
+possible to run time series analysis on borrowers. With 90831 unique values 
+of MemberKey there's few members that would have enough listings to be worth 
+the effort;
+- I'll convert ListingCreationDate, ClosedDate, DateCreditPulled, 
+LoanOriginationDate, FirstRecordedCreditLine do datetime type;
+- I'll convert LoanOriginationQuarter to a chronologically ordered factor;
+- I'll drop "Not Employed" and "Not Displayed" levels from IncomeRange and 
+order it. It would be better to create a separate datapoint for this because 
+actual income ranges and two dropped levels all have distinct meanings, but 
+not particularly interested in that at the moment;
+- I'll convert ProsperRating..Alpha. and CreditGrade into ordered factors. 
+I'll also introduce data point CreditGrade.ProsperRating that is a joined 
+version of ProsperRating..Alpha. and CreditGrade, because their levels seem to 
+carry same meaning and a listing never has both present;
+- I'll introduce data point ListingCategory based on ListingCategory..numeric. 
+and description in the data point definition;
+- I'll convert IncomeVerifiable, CurrentlyInGroup, IsBorrowerHomeowner to \
+boolean type;
+- Ill introduce past.due.days ordered factor based on LoanStatus.
+
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE, packages}
 # Load all of the packages that you end up using in your analysis in this code
@@ -26,11 +54,9 @@ library(lubridate)
 library(RColorBrewer)
 ```
 
-```{r echo=FALSE, Load_the_Data}
-# Load the Data
+```{r echo=FALSE, Load_the_DataSet}
 loans <- read.csv('prosperLoanData.csv')
 ```
-
 
 ```{r echo=FALSE, Tidy_up}
 
@@ -147,18 +173,8 @@ loans <- loans %>%
   )
 ```
 
-> **Tip**: Before you create any plots, it is a good idea to provide a short
-introduction into the dataset that you are planning to explore. Replace this
-quoted text with that general information!
 
 # Univariate Plots Section
-
-> **Tip**: In this section, you should perform some preliminary exploration of
-your dataset. Run some summaries of the data and create univariate plots to
-understand the structure of the individual variables in your dataset. Don't
-forget to add a comment after each plot or closely-related group of plots!
-There should be multiple code chunks and text sections; the first one below is
-just to help you get started.
 
 ```{r echo=FALSE, Structure}
 str(loans)
@@ -169,7 +185,7 @@ summary(loans)
 ```
 
 ```{r echo=FALSE, Univariate_Plots}
-
+# checkpoint
 ```
 
 ```{r echo=FALSE}
@@ -181,6 +197,11 @@ ggplot(
   scale_x_datetime(date_breaks = "1 year", date_labels = "%Y")
 ```
 
+There's a gap in late 2008 - early 2009. Must be related to some data points 
+only having values until / from 2009.\
+Besides a slowdown in early 2013, number of listings increases almost 
+exponentially since 2009.
+
 ```{r echo=FALSE}
 ggplot(
   data = loans,
@@ -189,6 +210,8 @@ ggplot(
   geom_histogram(binwidth = 1000) +
   scale_x_continuous(breaks = seq(0, max(loans$LoanOriginalAmount), 5000))
 ```
+
+Round figures are very popular for original loan amounts.
 
 ```{r echo=FALSE}
 ggplot(
@@ -199,6 +222,9 @@ ggplot(
   scale_x_sqrt(breaks = seq(0, 50000, 2000)) +
   theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
 ```
+
+Stated monthly income distribution is massively sqewed with some peope claiming 
+to earn over a million per month.
 
 ```{r echo=FALSE}
 ggplot(
@@ -224,6 +250,9 @@ ggplot(
   geom_histogram()
 ```
 
+Borrower rate, APR and lender yield all have very similar values and follow
+very similar distributions.
+
 ```{r echo=FALSE}
 ggplot(
   data = loans,
@@ -233,6 +262,10 @@ ggplot(
   scale_x_sqrt(breaks = seq(0, 10, 0.5)) +
   theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
 ```
+
+Debt to income ratio is capped at 10, giving a fat end for the tail of 
+distribution, but majority of listings has much healthier ratios. Let's zoom in
+a bit.
 
 ```{r echo=FALSE}
 ggplot(
@@ -245,6 +278,8 @@ ggplot(
   theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
 ```
 
+A very smooth sqewed distribution here. Nothing unusual about it.
+
 ```{r echo=FALSE}
 ggplot(
   data = loans,
@@ -253,13 +288,27 @@ ggplot(
   geom_bar()
 ```
 
+One year term loans are unexpectedly rare.
+
 ```{r echo=FALSE}
 ggplot(
   data = loans,
   aes(x = Investors)
 ) +
-  geom_histogram()
+  geom_histogram() +
+  scale_x_continuous(breaks = seq(0, 1200, 100))
 ```
+
+```{r echo=FALSE}
+ggplot(
+  data = subset(loans, Investors <= 30),
+  aes(x = Investors)
+) +
+  geom_histogram(binwidth = 1) +
+  scale_x_continuous(breaks = 0:30)
+```
+
+All listings have at least 1 investor, but very few have more.
 
 ```{r echo=FALSE}
 ggplot(
@@ -271,15 +320,20 @@ ggplot(
   theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
 ```
 
+Debt consolitation is by far the most popular listing category. Counts between
+categories vary greatly.
+
 ```{r echo=FALSE}
 ggplot(
   data = subset(loans, Occupation != ""),
   aes(x = Occupation)
 ) +
   geom_bar() +
-  scale_y_sqrt() +
+  scale_y_sqrt(breaks = seq(0, 30000, 3000)) +
   theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
 ```
+
+Vast majority of occupations do not fall under predefined categories.
 
 ```{r echo=FALSE}
 ggplot(
@@ -288,6 +342,9 @@ ggplot(
 ) +
   geom_bar()
 ```
+
+Besides some loan listings actually declaring $0 income, nothing surprising
+in distribution of income range.
 
 ```{r echo=FALSE}
 ggplot(
@@ -299,15 +356,20 @@ ggplot(
   scale_y_sqrt(breaks = seq(0, 120000, 6000))
 ```
 
+There's some not fully funded listings. Distribution tail thickens going away 
+from main bulk of values. This is curious.
+
 ```{r echo=FALSE}
 ggplot(
   data = loans,
   aes(x = Recommendations)
 ) +
   geom_histogram(binwidth = 1) +
-  scale_x_continuous(breaks = seq(0, 40, 5)) +
+  scale_x_continuous(breaks = 0:40) +
   scale_y_sqrt(breaks = seq(0, 120000, 6000))
 ```
+
+Small number of extreme values. Having a recommendation is very rare.
 
 ```{r echo=FALSE}
 ggplot(
@@ -318,6 +380,10 @@ ggplot(
   theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
 ```
 
+Small past due periods are more common than longer ones. Probably becasue this
+catches some people that forgot to pay in time. Past 15 days, distribution stays
+fairly flat.
+
 ```{r echo=FALSE}
 ggplot(
   data = loans,
@@ -325,6 +391,8 @@ ggplot(
 ) +
   geom_bar()
 ```
+
+A little over half listings are from home owners.
 
 ```{r echo=FALSE}
 ggplot(
@@ -334,6 +402,8 @@ ggplot(
   geom_bar()
 ```
 
+It's not typical to belong to a group.
+
 ```{r echo=FALSE}
 ggplot(
   data = loans,
@@ -342,47 +412,42 @@ ggplot(
   geom_bar()
 ```
 
-```{r echo=FALSE}
-ggplot(
-  data = loans,
-  aes(x = IncomeVerifiable, y = StatedMonthlyIncome)
-) +
-  geom_boxplot()
-```
+It's typical to have verifiable income.
 
-```{r echo=FALSE}
-ggplot(
-  data = loans,
-  aes(x = IncomeVerifiable, y = StatedMonthlyIncome)
-) +
-  geom_boxplot() +
-  coord_cartesian(ylim = c(0, 15000))
-```
-
-> **Tip**: Make sure that you leave a blank line between the start / end of
-each code block and the end / start of your Markdown text so that it is
-formatted nicely in the knitted text. Note as well that text on consecutive
-lines is treated as a single space. Make sure you have a blank line between
-your paragraphs so that they too are formatted for easy readability.
 
 # Univariate Analysis
 
-> **Tip**: Now that you've completed your univariate explorations, it's time to
-reflect on and summarize what you've found. Use the questions below to help you
-gather your observations and add your own if you have other thoughts!
-
 ### What is the structure of your dataset?
 
+113937 observations and 81 data points, plus 3 calculated data points.
+
+- # TODO describe
+
 ### What is/are the main feature(s) of interest in your dataset?
+
+With so many data points the dataset could be split into multiple slices each
+telling something important about it. I'm sure I've missed some important 
+features, but of the ones I looked at these were most interesting: 
+LoanOriginalAmount, Term, Investors, PercentFunded, Income, IsBorrowerHomeOwner.
 
 ### What other features in the dataset do you think will help support your \
 investigation into your feature(s) of interest?
 
 ### Did you create any new variables from existing variables in the dataset?
 
+- past.due.days ordered factor based on LoanStatus to look more into past due
+loans;
+- CreditGrade.ProsperRating that is a joined version of ProsperRating..Alpha. 
+and CreditGrade, because their levels seem to carry same meaning and a listing 
+never has both present;
+- ListingCategory based on ListingCategory..numeric. and description in the data
+point definition to avoid having to memorize arbitrary IDs in order to perform
+any kind of analysis about it.
+
 ### Of the features you investigated, were there any unusual distributions? \
-Did you perform any operations on the data to tidy, adjust, or change the form \
-of the data? If so, why did you do this?
+
+- PercentFunded has a tail that thickens moving away from bulk of values;
+- LoanOriginalAmount spikes at round figures.
 
 
 # Bivariate Plots Section
@@ -481,6 +546,16 @@ ggplot(
 
 ```{r echo=FALSE}
 ggplot(
+  data = subset(loans, !is.na(ListingCategory)),
+  aes(x = ListingCategory)
+) +
+  geom_bar(aes(fill = IsBorrowerHomeowner), position = "dodge") +
+  scale_y_sqrt(breaks = seq(0, max(loans$LoanOriginalAmount), 5000)) +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
+```
+
+```{r echo=FALSE}
+ggplot(
   data = loans,
   aes(x = CurrentlyInGroup, LoanOriginalAmount)
 ) +
@@ -497,13 +572,21 @@ ggplot(
 
 ```{r echo=FALSE}
 ggplot(
-  data = subset(loans, !is.na(ListingCategory)),
-  aes(x = ListingCategory)
+  data = loans,
+  aes(x = IncomeVerifiable, y = StatedMonthlyIncome)
 ) +
-  geom_bar(aes(fill = IsBorrowerHomeowner), position = "dodge") +
-  scale_y_sqrt(breaks = seq(0, max(loans$LoanOriginalAmount), 5000)) +
-  theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
+  geom_boxplot()
 ```
+
+```{r echo=FALSE}
+ggplot(
+  data = loans,
+  aes(x = IncomeVerifiable, y = StatedMonthlyIncome)
+) +
+  geom_boxplot() +
+  coord_cartesian(ylim = c(0, 15000))
+```
+
 
 # Bivariate Analysis
 
