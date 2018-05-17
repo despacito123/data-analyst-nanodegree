@@ -806,6 +806,8 @@ ggplot(
   scale_y_continuous(breaks = seq(0.7, 1, 0.05))
 ```
 
+PercentFunded doesn't depend on Investor count.
+
 ```{r echo=FALSE}
 ggplot(
   data = subset(
@@ -820,6 +822,8 @@ ggplot(
   scale_y_continuous(breaks = seq(0.7, 1, 0.05))
 ```
 
+Investor count tends to be higher for best credit scores.
+
 ```{r echo=FALSE}
 ggplot(
   data = subset(loans, !is.na(ListingCategory)),
@@ -829,6 +833,20 @@ ggplot(
   scale_y_continuous(breaks = seq(0, max(loans$LoanOriginalAmount), 5000)) +
   theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
 ```
+
+```{r echo=FALSE}
+ggplot(
+  data = subset(loans, !is.na(ListingCategory)),
+  aes(x = ListingCategory, y = LoanOriginalAmount / Investors)
+) +
+  geom_boxplot() +
+  scale_y_sqrt(breaks = seq(0, 5000, 500)) +
+  coord_cartesian(ylim = c(0, 5000)) +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
+```
+
+Throughout listing categories distribution centers of loan amount per investor 
+look similar. Most categories have strongly skewed distributions.
 
 ```{r echo=FALSE}
 ggplot(
@@ -853,6 +871,36 @@ ggplot(
   geom_boxplot(aes(colour = IsBorrowerHomeowner), position = "dodge")
 ```
 
+Regardless of credit grade homeowners tend to get larger loans. Both groups
+are capped at same amounts per credit grade though.
+
+```{r echo=FALSE}
+ggplot(
+  data = subset(loans, !is.na(CreditGrade.ProsperRating)),
+  aes(x = ListingCreationDate, y = LoanOriginalAmount)
+) +
+  geom_point(aes(color = CreditGrade.ProsperRating)) +
+  scale_color_brewer() +
+  scale_y_continuous(breaks = seq(0, max(loans$LoanOriginalAmount), 5000)) +
+  scale_x_datetime(date_breaks = "1 year", date_labels = "%Y")
+```
+
+There are some visible caps for lower credit grades. Starting 2013 some were
+increased.
+
+```{r echo=FALSE}
+ggplot(
+  data = subset(
+    loans,
+    !is.na(CreditGrade.ProsperRating)
+  & !is.na(ListingCategory)),
+  aes(x = ListingCategory)
+) +
+  geom_bar(aes(fill = CreditGrade.ProsperRating)) +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
+```
+
+
 # Multivariate Analysis
 
 ### Talk about some of the relationships you observed in this part of the \
@@ -860,9 +908,6 @@ investigation. Were there features that strengthened each other in terms of \
 looking at your feature(s) of interest?
 
 ### Were there any interesting or surprising interactions between features?
-
-### OPTIONAL: Did you create any models with your dataset? Discuss the \
-strengths and limitations of your model.
 
 ------
 
