@@ -492,6 +492,59 @@ names(unique.LoanOriginalAmounts.summary) <- c(
 unique.LoanOriginalAmounts.summary
 ```
 
+Most loan amounts are divisible by 500.
+
+```{r echo=FALSE}
+ggplot(
+  data = loans,
+  aes(
+    x = cut(
+      LoanOriginalAmount,
+      breaks = seq(250, max(loans$LoanOriginalAmount) + 250, 500),
+      dig.lab = 10
+    ),
+    y = Investors
+  )
+) +
+  geom_boxplot() +
+  scale_y_continuous(breaks = seq(0, 1200, 100)) +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
+```
+
+```{r echo=FALSE}
+ggplot(
+  data = subset(loans, LoanOriginalAmount < 10250),
+  aes(
+    x = cut(
+      LoanOriginalAmount,
+      breaks = seq(250, 10250 + 250, 500),
+      dig.lab = 10
+    ),
+    y = Investors
+  )
+) +
+  geom_boxplot() +
+  scale_y_continuous(breaks = seq(0, 600, 50)) +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
+```
+
+Investor counts tends to increase as loan amount increases, but for most
+ranges small investor counts are more likely.
+
+```{r echo=FALSE}
+ggplot(
+  data = loans,
+  aes(x = LoanOriginalAmount, y = LoanOriginalAmount / Investors)
+) +
+  geom_point(alpha = 0.05) +
+  scale_x_continuous(breaks = seq(0, max(loans$LoanOriginalAmount), 5000)) +
+  scale_y_continuous(breaks = seq(0, max(loans$LoanOriginalAmount), 5000))
+```
+
+Clear diagonal lines mark loans with small number of investors. We also have
+a lot of loans where loan amount per investor is very small, indicating that
+investing a small amount is popular acros all loan amounts.
+
 ```{r echo=FALSE}
 ggplot(
   data = loans,
@@ -502,9 +555,23 @@ ggplot(
   scale_x_datetime(date_breaks = "1 year", date_labels = "%Y")
 ```
 
-We can see loans over $25000 only started appearing since 2013.\
-Loans under $2000 stopped appearing since 2011.\
+We can see loans over $25000 only started appearing since 2013.
+
+Loans under $2000 stopped appearing since 2011.
+
 Decrease in loan count on early 2013 is visible across all amounts.
+
+```{r echo=FALSE}
+ggplot(
+  data = loans,
+  aes(x = ListingCreationDate, y = Investors)
+) +
+  geom_point(alpha = 0.05) +
+  scale_y_continuous(breaks = seq(0, max(loans$Investors), 100)) +
+  scale_x_datetime(date_breaks = "1 year", date_labels = "%Y")
+```
+
+Starting 2013 small number of inverstors per loan became much more popular.
 
 ```{r echo=FALSE}
 ggplot(
@@ -530,6 +597,9 @@ ggplot(
 Not fully funded listings have a very currious relationship between 
 LoanOriginalAmount and PercentFunded. Overal correlation is weak, but dots fall 
 into diagonal lines.
+
+Diagonal lines seem to arrive to round loan amount values as they approach full 
+funding. These values probably are the amounts originally asked for.
 
 ```{r echo=FALSE}
 ggplot(
@@ -575,7 +645,7 @@ ggplot(
 ```
 
 Some listing categories tend to have much bigger loans than others. Debt 
-Consolidation is surprisingly big.Baby&Adoption loans tend to be even bigger 
+Consolidation is surprisingly big. Baby&Adoption loans tend to be even bigger 
 than Wedding Loans.
 
 ```{r echo=FALSE}
@@ -659,17 +729,25 @@ income.
 
 # Bivariate Analysis
 
-> **Tip**: As before, summarize what you found in your bivariate explorations
-here. Use the questions below to guide your discussion.
-
 ### Talk about some of the relationships you observed in this part of the \
 investigation. How did the feature(s) of interest vary with other features in \
 the dataset?
 
-### Did you observe any interesting relationships between the other features \
-(not the main feature(s) of interest)?
+Homeowners seem to get larger loans. They also seem to be getting more loans 
+listed in home improvements, business, debt consolidation and childcare 
+categories. That tells a little about social status of homeowners.
+
+Even though most loans are funded by a single investor regardless of loan
+amount, having large amount of investors (small contributions) seems to be
+popular regardless of loan amount as well.
+
+Loan amount tencds to be larger for meter credit ratings up to C and stays
+similar for higher ratings. This could be due to an upper limit of loans amounts
+visible in dataset.
 
 ### What was the strongest relationship you found?
+
+BorrowerRate and BorroweAPR.
 
 
 # Multivariate Plots Section
@@ -693,6 +771,29 @@ ggplot(
   geom_boxplot() +
   scale_y_continuous(breaks = seq(0, max(loans$LoanOriginalAmount), 5000))
 ```
+
+```{r echo=FALSE}
+ggplot(
+  data = subset(loans, !is.na(CreditGrade.ProsperRating)),
+  aes(x = CreditGrade.ProsperRating, y = LoanOriginalAmount / Investors)
+) +
+  geom_boxplot() +
+  scale_y_continuous(breaks = seq(0, 8000, 1000)) +
+  coord_cartesian(ylim = c(0, 8000))
+```
+
+```{r echo=FALSE}
+ggplot(
+  data = subset(loans, !is.na(CreditGrade.ProsperRating)),
+  aes(x = CreditGrade.ProsperRating, y = LoanOriginalAmount / Investors)
+) +
+  geom_boxplot() +
+  scale_y_continuous(breaks = seq(0, 700, 100)) +
+  coord_cartesian(ylim = c(0, 700))
+```
+
+Even though loan amount per investor tends to be much greather for A, B and C
+ratings, centers of distributions are similar across credit ratings.
 
 ```{r echo=FALSE}
 ggplot(
