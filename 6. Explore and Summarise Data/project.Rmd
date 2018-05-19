@@ -198,7 +198,8 @@ ggplot(
 ```
 
 There's a gap in late 2008 - early 2009. Must be related to some data points 
-only having values until / from 2009.\
+only having values until / from 2009.
+
 Besides a slowdown in early 2013, number of listings increases almost 
 exponentially since 2009.
 
@@ -452,14 +453,8 @@ any kind of analysis about it.
 
 # Bivariate Plots Section
 
-> **Tip**: Based on what you saw in the univariate plots, what relationships
-between variables might be interesting to look at in this section? Don't limit
-yourself to relationships between a main output feature and one of the
-supporting variables. Try to look at relationships between supporting variables
-as well.
-
 ```{r echo=FALSE, Bivariate_Plots}
-
+# checkpoint
 ```
 
 
@@ -811,7 +806,7 @@ you plan on creating any mathematical models, this is the section where you
 will do that.
 
 ```{r echo=FALSE, Multivariate_Plots}
-
+# checkpoint
 ```
 
 ```{r echo=FALSE}
@@ -869,8 +864,7 @@ ggplot(
   aes(x = CreditGrade.ProsperRating, y = LoanOriginalAmount)
 ) +
   geom_jitter(aes(colour = Investors)) +
-  scale_colour_gradient() +
-  scale_y_continuous(breaks = seq(0.7, 1, 0.05))
+  scale_colour_gradient()
 ```
 
 Investor count tends to be higher for best credit scores.
@@ -956,7 +950,8 @@ ggplot(
   aes(x = LoanOriginalAmount, y = EstimatedReturn)
 ) +
   geom_point(aes(color = CreditGrade.ProsperRating)) +
-  scale_color_brewer()
+  scale_color_brewer() +
+  scale_x_continuous(breaks = seq(0, max(loans$LoanOriginalAmount), 5000))
 ```
 
 Lower credit grades tend to get smaller loans and more widely distributed 
@@ -990,12 +985,11 @@ ggplot(
   data = subset(
     loans,
     !is.na(CreditGrade.ProsperRating)
-    & Investors <= quantile(Investors, 0.99)
     & year(ListingCreationDate) >= 2009
   ),
   aes(x = LoanOriginalAmount, y = EstimatedReturn)
 ) +
-  geom_point(aes(color = Investors), size = 1) +
+  geom_point(aes(color = Term), size = 1) +
   facet_grid(year(ListingCreationDate) ~ CreditGrade.ProsperRating) +
   theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
 ```
@@ -1026,45 +1020,101 @@ increases.
 
 # Final Plots and Summary
 
-> **Tip**: You've done a lot of exploration and have built up an understanding
-of the structure of and relationships between the variables in your dataset.
-Here, you will select three plots from all of your previous exploration to
-present here as a summary of some of your most interesting findings. Make sure
-that you have refined your selected plots for good titling, axis labels (with
-units), and good aesthetic choices (e.g. color, transparency). After each plot,
-make sure you justify why you chose each plot by describing what it shows.
-
 ### Plot One
 ```{r echo=FALSE, Plot_One}
-
+ggplot(
+  data = subset(loans, !is.na(CreditGrade.ProsperRating)),
+  aes(x = LoanOriginalAmount)
+) +
+  geom_density(aes(color = CreditGrade.ProsperRating)) +
+  scale_color_brewer("Credit grade") +
+  scale_x_continuous(breaks = seq(0, max(loans$LoanOriginalAmount), 5000)) +
+  labs(
+    x = "Original loan amount",
+    y = "Density",
+    title = "Original loan amount density by credit grade"
+  )
 ```
 
 ### Description One
 
+Lower credit grade borrowers dominate loan amounts under 5000, but quickly
+disappear as amount increases.
+
+All densities spike on loan amounts divisible by 5000. 
 
 ### Plot Two
 ```{r echo=FALSE, Plot_Two}
-
+ggplot(
+  data = subset(loans, !is.na(CreditGrade.ProsperRating)),
+  aes(x = CreditGrade.ProsperRating, EstimatedReturn)
+) +
+  geom_boxplot() +
+  coord_cartesian(ylim = c(0.03, 0.2)) +
+  labs(
+    x = "Credit grade",
+    y = "Estimated return",
+    title = "Estimated return distribution by credit grade"
+  )
 ```
 
 ### Description Two
 
+Credit grade clearly has a relationship with estimated return. Better the
+grade smaller and more nealty distributed the estimated return.
 
 ### Plot Three
 ```{r echo=FALSE, Plot_Three}
-
+ggplot(
+  data = subset(
+    loans,
+    !is.na(CreditGrade.ProsperRating) 
+    & !is.na(EstimatedReturn)
+  ),
+  aes(x = LoanOriginalAmount, y = EstimatedReturn)
+) +
+  geom_point(aes(color = CreditGrade.ProsperRating)) +
+  scale_color_brewer("Credit grade") +
+  scale_x_continuous(breaks = seq(0, max(loans$LoanOriginalAmount), 5000)) +
+  labs(
+    x = "Original loan amount",
+    y = "Estimated return",
+    title = "Estimated return by original loan amount"
+  )
 ```
 
 ### Description Three
+
+Lower credit grades tend to get smaller loans and more widely distributed 
+estimated returns.
+
+Better credit grades concentrate at the lower end of estimated return with an
+exception of a bunch of negative estimated returns for credit grade HR.
+
 
 ------
 
 # Reflection
 
-> **Tip**: Here's the final step! Reflect on the exploration you performed and
-the insights you found. What were some of the struggles that you went through?
-What went well? What was surprising? Make sure you include an insight into
-future work that could be done with the dataset.
+This was a very challenging dataset to explore. Main struggle was analysis 
+paralysis inducing number of data points. It feels like my explorations barely
+touched the surface.
 
-> **Tip**: Don't forget to remove this, and the other **Tip** sections before
-saving your final work and knitting the final report!
+It was interesting to see hints of lender policy changes in time series as well 
+as tendency to borrow round amounts. These high density values created difficult
+overplotting problems.
+
+What was unexpected is how variability of many variables decreases as loan
+amount and listing creation date increases. This shows that lender has stricter
+rules for larger loans, as well as rules got stricter between 2010 and 2011 in
+general.
+
+It was a bit surprising to see such a visible relationship between credit grade 
+and estimated return.
+
+There's still plenty of data points to investigate in future work. Initially
+when I started working on this dataset I expected to find clues on how to 
+predict how much could be borrowed based on borrower properties, but it doesn't
+seem to contain rejected loans, so that is hardly possible as people don't 
+always borrow largest amount possible. This dataset would be good to build 
+models though.
