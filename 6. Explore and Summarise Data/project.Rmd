@@ -626,6 +626,15 @@ Investors and PercentFunded are not related either.
 ```{r echo=FALSE}
 ggplot(
   data = subset(loans, !is.na(CreditGrade.ProsperRating)),
+  aes(x = LoanOriginalAmount)
+) +
+  geom_density(aes(color = CreditGrade.ProsperRating)) +
+  scale_color_brewer()
+```
+
+```{r echo=FALSE}
+ggplot(
+  data = subset(loans, !is.na(CreditGrade.ProsperRating)),
   aes(x = CreditGrade.ProsperRating, y = LoanOriginalAmount)
 ) +
   geom_boxplot() +
@@ -725,6 +734,48 @@ ggplot(
 
 Borrowers with verifiale income have tighter distribution of stated monthly 
 income.
+
+```{r echo=FALSE}
+ggplot(
+  data = subset(loans, !is.na(ListingCategory)),
+  aes(x = ListingCategory, EstimatedReturn)
+) +
+  geom_boxplot() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
+```
+
+```{r echo=FALSE}
+ggplot(
+  data = subset(loans, !is.na(ListingCategory)),
+  aes(x = ListingCategory, EstimatedReturn)
+) +
+  geom_boxplot() +
+  coord_cartesian(ylim = c(0.05, 0.15)) +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
+```
+
+Looks like EstimatedReturn has little to do with ListingCategory. More popular
+categories have more outliers.
+
+```{r echo=FALSE}
+ggplot(
+  data = subset(loans, !is.na(CreditGrade.ProsperRating)),
+  aes(x = CreditGrade.ProsperRating, EstimatedReturn)
+) +
+  geom_boxplot()
+```
+
+```{r echo=FALSE}
+ggplot(
+  data = subset(loans, !is.na(CreditGrade.ProsperRating)),
+  aes(x = CreditGrade.ProsperRating, EstimatedReturn)
+) +
+  geom_boxplot() +
+  coord_cartesian(ylim = c(0.03, 0.2))
+```
+
+Credit grade clearly has a relationship with estimated return. Better the
+grade smaller and more nealty distributed the estimated return.
 
 
 # Bivariate Analysis
@@ -826,6 +877,21 @@ Investor count tends to be higher for best credit scores.
 
 ```{r echo=FALSE}
 ggplot(
+  data = subset(
+    loans,
+    Investors <= quantile(Investors, 0.99)
+    & !is.na(ListingCategory)
+  ),
+  aes(x = ListingCategory, y = LoanOriginalAmount)
+) +
+  geom_jitter(aes(colour = Investors)) +
+  scale_color_gradient() +
+  scale_y_continuous(breaks = seq(0, max(loans$LoanOriginalAmount), 5000)) +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
+```
+
+```{r echo=FALSE}
+ggplot(
   data = subset(loans, !is.na(ListingCategory)),
   aes(x = ListingCategory, y = LoanOriginalAmount / Investors)
 ) +
@@ -848,20 +914,7 @@ ggplot(
 Throughout listing categories distribution centers of loan amount per investor 
 look similar. Most categories have strongly skewed distributions.
 
-```{r echo=FALSE}
-ggplot(
-  data = subset(
-    loans,
-    Investors <= quantile(Investors, 0.99)
-    & !is.na(ListingCategory)
-  ),
-  aes(x = ListingCategory, y = LoanOriginalAmount)
-) +
-  geom_jitter(aes(colour = Investors)) +
-  scale_color_gradient() +
-  scale_y_continuous(breaks = seq(0, max(loans$LoanOriginalAmount), 5000)) +
-  theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
-```
+Personal and student loans seem to have more investors per loan amount.
 
 ```{r echo=FALSE}
 ggplot(
@@ -890,15 +943,70 @@ increased.
 
 ```{r echo=FALSE}
 ggplot(
+  data = subset(loans, !is.na(CreditGrade.ProsperRating)),
+  aes(x = CreditGrade.ProsperRating, EstimatedReturn)
+) +
+  geom_jitter(aes(color = LoanOriginalAmount)) +
+  geom_boxplot(outlier.colour = NA, outlier.shape = NA, fill = NA, color = I("#dd0000"))
+```
+
+```{r echo=FALSE}
+ggplot(
+  data = subset(loans, !is.na(CreditGrade.ProsperRating)),
+  aes(x = LoanOriginalAmount, y = EstimatedReturn)
+) +
+  geom_point(aes(color = CreditGrade.ProsperRating)) +
+  scale_color_brewer()
+```
+
+Lower credit grades tend to get smaller loans and more widely distributed 
+estimated returns.
+
+```{r echo=FALSE}
+ggplot(
+  data = subset(loans, !is.na(CreditGrade.ProsperRating)),
+  aes(x = LoanOriginalAmount, y = EstimatedReturn)
+) +
+  geom_point(aes(color = BorrowerRate))
+```
+
+As expected, borrower rate and estimated return seem related. As not expected, 
+negative estimated returns have a lot of high borrower rates in the mix.
+
+Loan amount doesn't seem related to borrower rate or estimated return, but 
+their variablity decreases as loan amount increases.
+
+```{r echo=FALSE}
+ggplot(
+  data = subset(loans, !is.na(CreditGrade.ProsperRating)),
+  aes(x = LoanOriginalAmount, y = EstimatedReturn)
+) +
+  geom_density_2d(alpha = 0.5) +
+  facet_wrap(~ CreditGrade.ProsperRating, ncol = 3)
+```
+
+```{r echo=FALSE}
+ggplot(
   data = subset(
     loans,
     !is.na(CreditGrade.ProsperRating)
-  & !is.na(ListingCategory)),
-  aes(x = ListingCategory)
+    & Investors <= quantile(Investors, 0.99)
+    & year(ListingCreationDate) >= 2009
+  ),
+  aes(x = LoanOriginalAmount, y = EstimatedReturn)
 ) +
-  geom_bar(aes(fill = CreditGrade.ProsperRating)) +
+  geom_point(aes(color = Investors), size = 1) +
+  facet_grid(year(ListingCreationDate) ~ CreditGrade.ProsperRating) +
   theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
 ```
+
+This is useless being so tiny, but we're looking looking at 5 variables at once!
+
+It's still good enough to reasert some previous observations that were difficult
+to see in previous plots. Change of loan amount caps per credit grade over time
+for example. We also see that negative estimated returns was a temporary thing
+and starting 2011 disappeared together with a lot of estimated return 
+extreme values.
 
 
 # Multivariate Analysis
@@ -907,7 +1015,12 @@ ggplot(
 investigation. Were there features that strengthened each other in terms of \
 looking at your feature(s) of interest?
 
-### Were there any interesting or surprising interactions between features?
+Homeowners tend to get larger loans across credit grades. I was expecting this
+effect to diminish for higher credit grades, but that was not the case.
+
+Variability of data points like estimated return decreases as loan amount 
+increases.
+
 
 ------
 
