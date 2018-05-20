@@ -27,14 +27,19 @@ not particularly interested in that at the moment;
 I'll also introduce data point CreditGrade.ProsperRating that is a joined 
 version of ProsperRating..Alpha. and CreditGrade, because their levels seem to 
 carry same meaning and a listing never has both present;
+- T'll convert Term into ordered factor as it only has 3 distinc values;
 - I'll introduce data point ListingCategory based on ListingCategory..numeric. 
 and description in the data point definition;
 - I'll convert IncomeVerifiable, CurrentlyInGroup, IsBorrowerHomeowner to \
 boolean type;
 - Ill introduce past.due.days ordered factor based on LoanStatus.
 
+```{r global_options, include=FALSE}
+knitr::opts_chunk$set(echo=FALSE, warning=FALSE, message=FALSE)
+options(scipen=999)
+```
 
-```{r echo=FALSE, message=FALSE, warning=FALSE, packages}
+```{r packages}
 # Load all of the packages that you end up using in your analysis in this code
 # chunk.
 
@@ -54,11 +59,11 @@ library(lubridate)
 library(RColorBrewer)
 ```
 
-```{r echo=FALSE, Load_the_DataSet}
+```{r Load_the_DataSet}
 loans <- read.csv('prosperLoanData.csv')
 ```
 
-```{r echo=FALSE, Tidy_up}
+```{r Tidy_up}
 
 # The category of the listing that the borrower selected when posting their 
 # listing: 0 - Not Available, 1 - Debt Consolidation, 2 - Home Improvement, 
@@ -162,6 +167,7 @@ loans <- loans %>%
       levels = ListingCategory.levels,
       labels = ListingCategory.labels
     ),
+    Term = ordered(Term),
     IncomeVerifiable = IncomeVerifiable == "True",
     CurrentlyInGroup = CurrentlyInGroup == "True",
     IsBorrowerHomeowner = IsBorrowerHomeowner == "True",
@@ -176,15 +182,15 @@ loans <- loans %>%
 
 # Univariate Plots Section
 
-```{r echo=FALSE, Structure}
+```{r Structure}
 str(loans)
 ```
 
-```{r echo=FALSE, Summary}
+```{r Summary}
 summary(loans)
 ```
 
-```{r echo=FALSE, Univariate_Plots}
+```{r Univariate_Plots}
 # checkpoint
 ```
 
@@ -203,7 +209,7 @@ only having values until / from 2009.
 Besides a slowdown in early 2013, number of listings increases almost 
 exponentially since 2009.
 
-```{r echo=FALSE}
+```{r}
 ggplot(
   data = loans,
   aes(x = LoanOriginalAmount)
@@ -214,7 +220,7 @@ ggplot(
 
 Round figures are very popular for original loan amounts.
 
-```{r echo=FALSE}
+```{r}
 ggplot(
   data = subset(loans, StatedMonthlyIncome <= 50000),
   aes(x = StatedMonthlyIncome)
@@ -227,7 +233,7 @@ ggplot(
 Stated monthly income distribution is massively sqewed with some peope claiming 
 to earn over a million per month.
 
-```{r echo=FALSE}
+```{r}
 ggplot(
   data = loans,
   aes(x = BorrowerRate)
@@ -235,7 +241,7 @@ ggplot(
   geom_histogram(binwidth = 0.01)
 ```
 
-```{r echo=FALSE}
+```{r}
 ggplot(
   data = loans,
   aes(x = BorrowerAPR)
@@ -243,7 +249,7 @@ ggplot(
   geom_histogram(binwidth = 0.01)
 ```
 
-```{r echo=FALSE}
+```{r}
 ggplot(
   data = loans,
   aes(x = LenderYield)
@@ -254,7 +260,7 @@ ggplot(
 Borrower rate, APR and lender yield all have very similar values and follow
 very similar distributions.
 
-```{r echo=FALSE}
+```{r}
 ggplot(
   data = loans,
   aes(x = DebtToIncomeRatio)
@@ -268,7 +274,7 @@ Debt to income ratio is capped at 10, giving a fat end for the tail of
 distribution, but majority of listings has much healthier ratios. Let's zoom in
 a bit.
 
-```{r echo=FALSE}
+```{r}
 ggplot(
   data = loans,
   aes(x = DebtToIncomeRatio)
@@ -281,17 +287,17 @@ ggplot(
 
 A very smooth sqewed distribution here. Nothing unusual about it.
 
-```{r echo=FALSE}
+```{r}
 ggplot(
   data = loans,
-  aes(x = as.character(Term))
+  aes(x = Term)
 ) +
   geom_bar()
 ```
 
 One year term loans are unexpectedly rare.
 
-```{r echo=FALSE}
+```{r}
 ggplot(
   data = loans,
   aes(x = Investors)
@@ -300,7 +306,7 @@ ggplot(
   scale_x_continuous(breaks = seq(0, 1200, 100))
 ```
 
-```{r echo=FALSE}
+```{r}
 ggplot(
   data = subset(loans, Investors <= 30),
   aes(x = Investors)
@@ -311,7 +317,7 @@ ggplot(
 
 All listings have at least 1 investor, but very few have more.
 
-```{r echo=FALSE}
+```{r}
 ggplot(
   data = loans,
   aes(x = ListingCategory)
@@ -324,7 +330,7 @@ ggplot(
 Debt consolitation is by far the most popular listing category. Counts between
 categories vary greatly.
 
-```{r echo=FALSE}
+```{r}
 ggplot(
   data = subset(loans, Occupation != ""),
   aes(x = Occupation)
@@ -336,7 +342,7 @@ ggplot(
 
 Vast majority of occupations do not fall under predefined categories.
 
-```{r echo=FALSE}
+```{r}
 ggplot(
   data = loans,
   aes(x = IncomeRange)
@@ -347,7 +353,7 @@ ggplot(
 Besides some loan listings actually declaring $0 income, nothing surprising
 in distribution of income range.
 
-```{r echo=FALSE}
+```{r}
 ggplot(
   data = loans,
   aes(x = PercentFunded)
@@ -360,7 +366,7 @@ ggplot(
 There's some not fully funded listings. Distribution tail thickens going away 
 from main bulk of values. This is curious.
 
-```{r echo=FALSE}
+```{r}
 ggplot(
   data = loans,
   aes(x = Recommendations)
@@ -372,7 +378,7 @@ ggplot(
 
 Small number of extreme values. Having a recommendation is very rare.
 
-```{r echo=FALSE}
+```{r}
 ggplot(
   data = subset(loans, !is.na(past.due.days)),
   aes(x = past.due.days)
@@ -385,7 +391,7 @@ Small past due periods are more common than longer ones. Probably becasue this
 catches some people that forgot to pay in time. Past 15 days, distribution stays
 fairly flat.
 
-```{r echo=FALSE}
+```{r}
 ggplot(
   data = loans,
   aes(x = IsBorrowerHomeowner)
@@ -395,7 +401,7 @@ ggplot(
 
 A little over half listings are from home owners.
 
-```{r echo=FALSE}
+```{r}
 ggplot(
   data = loans,
   aes(x = CurrentlyInGroup)
@@ -405,7 +411,7 @@ ggplot(
 
 It's not typical to belong to a group.
 
-```{r echo=FALSE}
+```{r}
 ggplot(
   data = loans,
   aes(x = IncomeVerifiable)
@@ -421,8 +427,8 @@ It's typical to have verifiable income.
 ### What is the structure of your dataset?
 
 113937 observations and 81 data points, plus 3 calculated data points.
-
-- # TODO describe
+As of time of writing, brief descriptions of data 
+points can be found [here](https://docs.google.com/spreadsheets/d/1gDyi_L4UvIrLTEC6Wri5nbaMmkGmLQBk-Yx3z0XDEtI/edit#gid=0).
 
 ### What is/are the main feature(s) of interest in your dataset?
 
@@ -453,12 +459,12 @@ any kind of analysis about it.
 
 # Bivariate Plots Section
 
-```{r echo=FALSE, Bivariate_Plots}
+```{r Bivariate_Plots}
 # checkpoint
 ```
 
 
-```{r echo=FALSE}
+```{r}
 ggplot(
   data = loans,
   aes(x = LoanOriginalAmount, y = Investors)
@@ -471,7 +477,7 @@ We see same clusters of observations on round numbers. Dots stack to vertical
 bars, meaning, that most listings tend to fall on small number of 
 LoanOriginalAmount values.
 
-```{r echo=FALSE}
+```{r}
 unique.LoanOriginalAmounts.summary <- c(
     length(unique(loans$LoanOriginalAmount)),
     length(loans$LoanOriginalAmount),
@@ -489,7 +495,7 @@ unique.LoanOriginalAmounts.summary
 
 Most loan amounts are divisible by 500.
 
-```{r echo=FALSE}
+```{r}
 ggplot(
   data = loans,
   aes(
@@ -506,7 +512,7 @@ ggplot(
   theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
 ```
 
-```{r echo=FALSE}
+```{r}
 ggplot(
   data = subset(loans, LoanOriginalAmount < 10250),
   aes(
@@ -526,7 +532,7 @@ ggplot(
 Investor counts tends to increase as loan amount increases, but for most
 ranges small investor counts are more likely.
 
-```{r echo=FALSE}
+```{r}
 ggplot(
   data = loans,
   aes(x = LoanOriginalAmount, y = LoanOriginalAmount / Investors)
@@ -540,7 +546,7 @@ Clear diagonal lines mark loans with small number of investors. We also have
 a lot of loans where loan amount per investor is very small, indicating that
 investing a small amount is popular acros all loan amounts.
 
-```{r echo=FALSE}
+```{r}
 ggplot(
   data = loans,
   aes(x = ListingCreationDate, y = LoanOriginalAmount)
@@ -556,7 +562,7 @@ Loans under $2000 stopped appearing since 2011.
 
 Decrease in loan count on early 2013 is visible across all amounts.
 
-```{r echo=FALSE}
+```{r}
 ggplot(
   data = loans,
   aes(x = ListingCreationDate, y = Investors)
@@ -568,10 +574,10 @@ ggplot(
 
 Starting 2013 small number of inverstors per loan became much more popular.
 
-```{r echo=FALSE}
+```{r}
 ggplot(
   data = loans,
-  aes(x = as.character(Term), y = LoanOriginalAmount)
+  aes(x = Term, y = LoanOriginalAmount)
 ) +
   geom_boxplot()
 ```
@@ -579,7 +585,7 @@ ggplot(
 LoanOriginalAmount and Term relationship looks as expected. Longterm loans 
 tend to be bigger.
 
-```{r echo=FALSE}
+```{r}
 ggplot(
   data = subset(loans, PercentFunded < 1),
   aes(x = LoanOriginalAmount, y = PercentFunded)
@@ -596,7 +602,7 @@ into diagonal lines.
 Diagonal lines seem to arrive to round loan amount values as they approach full 
 funding. These values probably are the amounts originally asked for.
 
-```{r echo=FALSE}
+```{r}
 ggplot(
   data = subset(loans, PercentFunded < 1),
   aes(x = LenderYield, y = PercentFunded)
@@ -606,7 +612,7 @@ ggplot(
 
 LenderYield and PercentFunded are unrelated.
 
-```{r echo=FALSE}
+```{r}
 ggplot(
   data = subset(loans, PercentFunded < 1),
   aes(x = Investors, y = PercentFunded)
@@ -618,16 +624,17 @@ ggplot(
 
 Investors and PercentFunded are not related either.
 
-```{r echo=FALSE}
+```{r}
 ggplot(
   data = subset(loans, !is.na(CreditGrade.ProsperRating)),
   aes(x = LoanOriginalAmount)
 ) +
   geom_density(aes(color = CreditGrade.ProsperRating)) +
-  scale_color_brewer()
+  scale_color_brewer() +
+  theme_dark()
 ```
 
-```{r echo=FALSE}
+```{r}
 ggplot(
   data = subset(loans, !is.na(CreditGrade.ProsperRating)),
   aes(x = CreditGrade.ProsperRating, y = LoanOriginalAmount)
@@ -639,7 +646,7 @@ ggplot(
 CreditGrade.ProsperRating and LoanOriginalAmount are related. LoanOriginalAmount
 increases until rating C and then flattens out.
 
-```{r echo=FALSE}
+```{r}
 ggplot(
   data = subset(loans, !is.na(ListingCategory)),
   aes(x = ListingCategory, y = LoanOriginalAmount)
@@ -652,7 +659,7 @@ Some listing categories tend to have much bigger loans than others. Debt
 Consolidation is surprisingly big. Baby&Adoption loans tend to be even bigger 
 than Wedding Loans.
 
-```{r echo=FALSE}
+```{r}
 ggplot(
   data = loans,
   aes(x = BorrowerAPR, y = BorrowerRate)
@@ -663,7 +670,7 @@ ggplot(
 Not surprisingly BorrowerAPR and BorrowerRate have a very strong relationship.
 What's unexpected is that it neatly falls into bunch of straight lines.
 
-```{r echo=FALSE}
+```{r}
 ggplot(
   data = loans,
   aes(x = IsBorrowerHomeowner, LoanOriginalAmount)
@@ -673,7 +680,7 @@ ggplot(
 
 Homeowners tend to get bigger loans.
 
-```{r echo=FALSE}
+```{r}
 ggplot(
   data = subset(loans, !is.na(ListingCategory)),
   aes(x = ListingCategory)
@@ -687,7 +694,7 @@ Most listing categories have fairly similar popularity between homeowners and
 non-homeowners. One exception is Home Improvement, with much more homeowners.
 This makes perfect sense.
 
-```{r echo=FALSE}
+```{r}
 ggplot(
   data = loans,
   aes(x = CurrentlyInGroup, LoanOriginalAmount)
@@ -697,7 +704,7 @@ ggplot(
 
 Borrowers that are in groups tend to get smaller loans.
 
-```{r echo=FALSE}
+```{r}
 ggplot(
   data = loans,
   aes(x = IncomeVerifiable, LoanOriginalAmount)
@@ -708,7 +715,7 @@ ggplot(
 Borrowers with non-verifiable income tend to have a little smaller loans and is
 probably first sub-group I've looked at that doesn't have loans over $25000.
 
-```{r echo=FALSE}
+```{r}
 ggplot(
   data = loans,
   aes(x = IncomeVerifiable, y = StatedMonthlyIncome)
@@ -718,7 +725,7 @@ ggplot(
 
 Now that's some seriously extreme outliers. Let's zoom in.
 
-```{r echo=FALSE}
+```{r}
 ggplot(
   data = loans,
   aes(x = IncomeVerifiable, y = StatedMonthlyIncome)
@@ -730,7 +737,7 @@ ggplot(
 Borrowers with verifiale income have tighter distribution of stated monthly 
 income.
 
-```{r echo=FALSE}
+```{r}
 ggplot(
   data = subset(loans, !is.na(ListingCategory)),
   aes(x = ListingCategory, EstimatedReturn)
@@ -739,7 +746,7 @@ ggplot(
   theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
 ```
 
-```{r echo=FALSE}
+```{r}
 ggplot(
   data = subset(loans, !is.na(ListingCategory)),
   aes(x = ListingCategory, EstimatedReturn)
@@ -752,7 +759,7 @@ ggplot(
 Looks like EstimatedReturn has little to do with ListingCategory. More popular
 categories have more outliers.
 
-```{r echo=FALSE}
+```{r}
 ggplot(
   data = subset(loans, !is.na(CreditGrade.ProsperRating)),
   aes(x = CreditGrade.ProsperRating, EstimatedReturn)
@@ -760,7 +767,7 @@ ggplot(
   geom_boxplot()
 ```
 
-```{r echo=FALSE}
+```{r}
 ggplot(
   data = subset(loans, !is.na(CreditGrade.ProsperRating)),
   aes(x = CreditGrade.ProsperRating, EstimatedReturn)
@@ -798,18 +805,11 @@ BorrowerRate and BorroweAPR.
 
 # Multivariate Plots Section
 
-> **Tip**: Now it's time to put everything together. Based on what you found in
-the bivariate plots section, create a few multivariate plots to investigate
-more complex interactions between variables. Make sure that the plots that you
-create here are justified by the plots you explored in the previous section. If
-you plan on creating any mathematical models, this is the section where you
-will do that.
-
-```{r echo=FALSE, Multivariate_Plots}
+```{r Multivariate_Plots}
 # checkpoint
 ```
 
-```{r echo=FALSE}
+```{r}
 ggplot(
   data = subset(loans, !is.na(CreditGrade.ProsperRating)),
   aes(x = CreditGrade.ProsperRating, y = LoanOriginalAmount / Investors)
@@ -818,7 +818,7 @@ ggplot(
   scale_y_continuous(breaks = seq(0, max(loans$LoanOriginalAmount), 5000))
 ```
 
-```{r echo=FALSE}
+```{r}
 ggplot(
   data = subset(loans, !is.na(CreditGrade.ProsperRating)),
   aes(x = CreditGrade.ProsperRating, y = LoanOriginalAmount / Investors)
@@ -828,7 +828,7 @@ ggplot(
   coord_cartesian(ylim = c(0, 8000))
 ```
 
-```{r echo=FALSE}
+```{r}
 ggplot(
   data = subset(loans, !is.na(CreditGrade.ProsperRating)),
   aes(x = CreditGrade.ProsperRating, y = LoanOriginalAmount / Investors)
@@ -841,7 +841,7 @@ ggplot(
 Even though loan amount per investor tends to be much greather for A, B and C
 ratings, centers of distributions are similar across credit ratings.
 
-```{r echo=FALSE}
+```{r}
 ggplot(
   data = subset(loans, Investors <= quantile(Investors, 0.99)),
   aes(x = LoanOriginalAmount, y = PercentFunded)
@@ -854,7 +854,7 @@ ggplot(
 
 PercentFunded doesn't depend on Investor count.
 
-```{r echo=FALSE}
+```{r}
 ggplot(
   data = subset(
     loans,
@@ -869,7 +869,7 @@ ggplot(
 
 Investor count tends to be higher for best credit scores.
 
-```{r echo=FALSE}
+```{r}
 ggplot(
   data = subset(
     loans,
@@ -884,7 +884,7 @@ ggplot(
   theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
 ```
 
-```{r echo=FALSE}
+```{r}
 ggplot(
   data = subset(loans, !is.na(ListingCategory)),
   aes(x = ListingCategory, y = LoanOriginalAmount / Investors)
@@ -894,7 +894,7 @@ ggplot(
   theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
 ```
 
-```{r echo=FALSE}
+```{r}
 ggplot(
   data = subset(loans, !is.na(ListingCategory)),
   aes(x = ListingCategory, y = LoanOriginalAmount / Investors)
@@ -910,7 +910,7 @@ look similar. Most categories have strongly skewed distributions.
 
 Personal and student loans seem to have more investors per loan amount.
 
-```{r echo=FALSE}
+```{r}
 ggplot(
   data = subset(loans, !is.na(CreditGrade.ProsperRating)),
   aes(x = CreditGrade.ProsperRating, y = LoanOriginalAmount)
@@ -921,7 +921,7 @@ ggplot(
 Regardless of credit grade homeowners tend to get larger loans. Both groups
 are capped at same amounts per credit grade though.
 
-```{r echo=FALSE}
+```{r}
 ggplot(
   data = subset(loans, !is.na(CreditGrade.ProsperRating)),
   aes(x = ListingCreationDate, y = LoanOriginalAmount)
@@ -935,29 +935,35 @@ ggplot(
 There are some visible caps for lower credit grades. Starting 2013 some were
 increased.
 
-```{r echo=FALSE}
+```{r}
 ggplot(
   data = subset(loans, !is.na(CreditGrade.ProsperRating)),
   aes(x = CreditGrade.ProsperRating, EstimatedReturn)
 ) +
   geom_jitter(aes(color = LoanOriginalAmount)) +
-  geom_boxplot(outlier.colour = NA, outlier.shape = NA, fill = NA, color = I("#dd0000"))
+  geom_boxplot(
+    outlier.colour = NA,
+    outlier.shape = NA,
+    fill = NA,
+    color = I("#dd0000")
+  )
 ```
 
-```{r echo=FALSE}
+```{r}
 ggplot(
   data = subset(loans, !is.na(CreditGrade.ProsperRating)),
   aes(x = LoanOriginalAmount, y = EstimatedReturn)
 ) +
   geom_point(aes(color = CreditGrade.ProsperRating)) +
   scale_color_brewer() +
-  scale_x_continuous(breaks = seq(0, max(loans$LoanOriginalAmount), 5000))
+  scale_x_continuous(breaks = seq(0, max(loans$LoanOriginalAmount), 5000)) +
+  theme_dark()
 ```
 
 Lower credit grades tend to get smaller loans and more widely distributed 
 estimated returns.
 
-```{r echo=FALSE}
+```{r}
 ggplot(
   data = subset(loans, !is.na(CreditGrade.ProsperRating)),
   aes(x = LoanOriginalAmount, y = EstimatedReturn)
@@ -971,7 +977,7 @@ negative estimated returns have a lot of high borrower rates in the mix.
 Loan amount doesn't seem related to borrower rate or estimated return, but 
 their variablity decreases as loan amount increases.
 
-```{r echo=FALSE}
+```{r}
 ggplot(
   data = subset(loans, !is.na(CreditGrade.ProsperRating)),
   aes(x = LoanOriginalAmount, y = EstimatedReturn)
@@ -980,7 +986,7 @@ ggplot(
   facet_wrap(~ CreditGrade.ProsperRating, ncol = 3)
 ```
 
-```{r echo=FALSE}
+```{r}
 ggplot(
   data = subset(
     loans,
@@ -990,7 +996,9 @@ ggplot(
   aes(x = LoanOriginalAmount, y = EstimatedReturn)
 ) +
   geom_point(aes(color = Term), size = 1) +
+  scale_color_brewer() +
   facet_grid(year(ListingCreationDate) ~ CreditGrade.ProsperRating) +
+  theme_dark() +
   theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
 ```
 
@@ -1021,7 +1029,7 @@ increases.
 # Final Plots and Summary
 
 ### Plot One
-```{r echo=FALSE, Plot_One}
+```{r Plot_One}
 ggplot(
   data = subset(loans, !is.na(CreditGrade.ProsperRating)),
   aes(x = LoanOriginalAmount)
@@ -1030,10 +1038,11 @@ ggplot(
   scale_color_brewer("Credit grade") +
   scale_x_continuous(breaks = seq(0, max(loans$LoanOriginalAmount), 5000)) +
   labs(
-    x = "Original loan amount",
+    x = "Original loan amount ($)",
     y = "Density",
     title = "Original loan amount density by credit grade"
-  )
+  ) +
+  theme_dark()
 ```
 
 ### Description One
@@ -1044,7 +1053,7 @@ disappear as amount increases.
 All densities spike on loan amounts divisible by 5000. 
 
 ### Plot Two
-```{r echo=FALSE, Plot_Two}
+```{r Plot_Two}
 ggplot(
   data = subset(loans, !is.na(CreditGrade.ProsperRating)),
   aes(x = CreditGrade.ProsperRating, EstimatedReturn)
@@ -1053,7 +1062,7 @@ ggplot(
   coord_cartesian(ylim = c(0.03, 0.2)) +
   labs(
     x = "Credit grade",
-    y = "Estimated return",
+    y = "Estimated return (fractal)",
     title = "Estimated return distribution by credit grade"
   )
 ```
@@ -1064,7 +1073,7 @@ Credit grade clearly has a relationship with estimated return. Better the
 grade smaller and more nealty distributed the estimated return.
 
 ### Plot Three
-```{r echo=FALSE, Plot_Three}
+```{r Plot_Three}
 ggplot(
   data = subset(
     loans,
@@ -1077,10 +1086,11 @@ ggplot(
   scale_color_brewer("Credit grade") +
   scale_x_continuous(breaks = seq(0, max(loans$LoanOriginalAmount), 5000)) +
   labs(
-    x = "Original loan amount",
-    y = "Estimated return",
+    x = "Original loan amount ($)",
+    y = "Estimated return (fractal)",
     title = "Estimated return by original loan amount"
-  )
+  ) +
+  theme_dark()
 ```
 
 ### Description Three
