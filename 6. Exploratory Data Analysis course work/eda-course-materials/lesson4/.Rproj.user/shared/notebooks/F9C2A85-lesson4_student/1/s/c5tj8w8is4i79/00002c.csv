@@ -1,9 +1,0 @@
-"0","mts <- mmc %>% facet_wrap(mmc$country) %>% ts(start=c(1950), end=c(2004), frequency=1)
-"
-"2","Only the first value of `nrow` will be used."
-"2","Coercing `nrow` to be an integer."
-"2","NAs introduced by coercion"
-"2","`nrow` is missing or less than 1 and will be treated as NULL."
-"2","Error in UseMethod(""as.quoted"") : 
-  no applicable method for 'as.quoted' applied to an object of class ""data.frame""
-"

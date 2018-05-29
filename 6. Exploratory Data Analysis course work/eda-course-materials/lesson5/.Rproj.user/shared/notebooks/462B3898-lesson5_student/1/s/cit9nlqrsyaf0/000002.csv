@@ -1,3 +1,0 @@
-"0","set.seed(42)"
-"0","ids <- sample(levels(yo$id), 16)"
-"0","yo.sample <- subset(yo, id %in% ids)"
