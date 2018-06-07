@@ -1,0 +1,200 @@
+{
+  "created_at": "Tue May 02 00:04:57 +0000 2017",
+  "id": 859196978902773760,
+  "id_str": "859196978902773760",
+  "full_text": "We only rate dogs. This is quite clearly a smol broken polar bear. We'd appreciate if you only send dogs. Thank you... 12/10 https://t.co/g2nSyGenG9",
+  "truncated": false,
+  "display_text_range": [
+    0,
+    124
+  ],
+  "entities": {
+    "hashtags": [],
+    "symbols": [],
+    "user_mentions": [],
+    "urls": [],
+    "media": [
+      {
+        "id": 859196962498805762,
+        "id_str": "859196962498805762",
+        "indices": [
+          125,
+          148
+        ],
+        "media_url": "http://pbs.twimg.com/ext_tw_video_thumb/859196962498805762/pu/img/-yBpr4-o4GJZECYE.jpg",
+        "media_url_https": "https://pbs.twimg.com/ext_tw_video_thumb/859196962498805762/pu/img/-yBpr4-o4GJZECYE.jpg",
+        "url": "https://t.co/g2nSyGenG9",
+        "display_url": "pic.twitter.com/g2nSyGenG9",
+        "expanded_url": "https://twitter.com/dog_rates/status/859196978902773760/video/1",
+        "type": "photo",
+        "sizes": {
+          "small": {
+            "w": 480,
+            "h": 480,
+            "resize": "fit"
+          },
+          "thumb": {
+            "w": 150,
+            "h": 150,
+            "resize": "crop"
+          },
+          "medium": {
+            "w": 480,
+            "h": 480,
+            "resize": "fit"
+          },
+          "large": {
+            "w": 480,
+            "h": 480,
+            "resize": "fit"
+          }
+        }
+      }
+    ]
+  },
+  "extended_entities": {
+    "media": [
+      {
+        "id": 859196962498805762,
+        "id_str": "859196962498805762",
+        "indices": [
+          125,
+          148
+        ],
+        "media_url": "http://pbs.twimg.com/ext_tw_video_thumb/859196962498805762/pu/img/-yBpr4-o4GJZECYE.jpg",
+        "media_url_https": "https://pbs.twimg.com/ext_tw_video_thumb/859196962498805762/pu/img/-yBpr4-o4GJZECYE.jpg",
+        "url": "https://t.co/g2nSyGenG9",
+        "display_url": "pic.twitter.com/g2nSyGenG9",
+        "expanded_url": "https://twitter.com/dog_rates/status/859196978902773760/video/1",
+        "type": "video",
+        "sizes": {
+          "small": {
+            "w": 480,
+            "h": 480,
+            "resize": "fit"
+          },
+          "thumb": {
+            "w": 150,
+            "h": 150,
+            "resize": "crop"
+          },
+          "medium": {
+            "w": 480,
+            "h": 480,
+            "resize": "fit"
+          },
+          "large": {
+            "w": 480,
+            "h": 480,
+            "resize": "fit"
+          }
+        },
+        "video_info": {
+          "aspect_ratio": [
+            1,
+            1
+          ],
+          "duration_millis": 5467,
+          "variants": [
+            {
+              "bitrate": 832000,
+              "content_type": "video/mp4",
+              "url": "https://video.twimg.com/ext_tw_video/859196962498805762/pu/vid/480x480/tlEuPL7G9GR-7Kqp.mp4"
+            },
+            {
+              "bitrate": 256000,
+              "content_type": "video/mp4",
+              "url": "https://video.twimg.com/ext_tw_video/859196962498805762/pu/vid/240x240/j9YkVYhW62-UOOB5.mp4"
+            },
+            {
+              "content_type": "application/x-mpegURL",
+              "url": "https://video.twimg.com/ext_tw_video/859196962498805762/pu/pl/Wo_KYsFyTtB12y_V.m3u8"
+            }
+          ]
+        },
+        "additional_media_info": {
+          "monetizable": false
+        }
+      }
+    ]
+  },
+  "source": "<a href=\"http://twitter.com/download/iphone\" rel=\"nofollow\">Twitter for iPhone</a>",
+  "in_reply_to_status_id": null,
+  "in_reply_to_status_id_str": null,
+  "in_reply_to_user_id": null,
+  "in_reply_to_user_id_str": null,
+  "in_reply_to_screen_name": null,
+  "user": {
+    "id": 4196983835,
+    "id_str": "4196983835",
+    "name": "WeRateDogs\u2122\ud83c\udff3\ufe0f\u200d\ud83c\udf08",
+    "screen_name": "dog_rates",
+    "location": "\ud835\udcf6\ud835\udcee\ud835\udcfb\ud835\udcec\ud835\udcf1 \u21b4      DM YOUR DOGS",
+    "description": "Your Only Source for Professional Dog Ratings STORE: @ShopWeRateDogs | IG, FB & SC: WeRateDogs | MOBILE APP: @GoodDogsGame Business: dogratingtwitter@gmail.com",
+    "url": "https://t.co/N7sNNHAEXS",
+    "entities": {
+      "url": {
+        "urls": [
+          {
+            "url": "https://t.co/N7sNNHAEXS",
+            "expanded_url": "http://weratedogs.com",
+            "display_url": "weratedogs.com",
+            "indices": [
+              0,
+              23
+            ]
+          }
+        ]
+      },
+      "description": {
+        "urls": []
+      }
+    },
+    "protected": false,
+    "followers_count": 6889503,
+    "friends_count": 8,
+    "listed_count": 4477,
+    "created_at": "Sun Nov 15 21:41:29 +0000 2015",
+    "favourites_count": 134004,
+    "utc_offset": null,
+    "time_zone": null,
+    "geo_enabled": true,
+    "verified": true,
+    "statuses_count": 7100,
+    "lang": "en",
+    "contributors_enabled": false,
+    "is_translator": false,
+    "is_translation_enabled": false,
+    "profile_background_color": "000000",
+    "profile_background_image_url": "http://abs.twimg.com/images/themes/theme1/bg.png",
+    "profile_background_image_url_https": "https://abs.twimg.com/images/themes/theme1/bg.png",
+    "profile_background_tile": false,
+    "profile_image_url": "http://pbs.twimg.com/profile_images/948761950363664385/Fpr2Oz35_normal.jpg",
+    "profile_image_url_https": "https://pbs.twimg.com/profile_images/948761950363664385/Fpr2Oz35_normal.jpg",
+    "profile_banner_url": "https://pbs.twimg.com/profile_banners/4196983835/1525830435",
+    "profile_link_color": "F5ABB5",
+    "profile_sidebar_border_color": "000000",
+    "profile_sidebar_fill_color": "000000",
+    "profile_text_color": "000000",
+    "profile_use_background_image": false,
+    "has_extended_profile": true,
+    "default_profile": false,
+    "default_profile_image": false,
+    "following": false,
+    "follow_request_sent": false,
+    "notifications": false,
+    "translator_type": "none"
+  },
+  "geo": null,
+  "coordinates": null,
+  "place": null,
+  "contributors": null,
+  "is_quote_status": false,
+  "retweet_count": 31693,
+  "favorite_count": 92487,
+  "favorited": false,
+  "retweeted": false,
+  "possibly_sensitive": false,
+  "possibly_sensitive_appealable": false,
+  "lang": "en"
+}

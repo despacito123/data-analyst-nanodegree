@@ -1,0 +1,205 @@
+{
+  "created_at": "Wed Apr 12 18:25:07 +0000 2017",
+  "id": 852226086759018497,
+  "id_str": "852226086759018497",
+  "full_text": "Meet General. He wasn't content with the quality of his room. Requested to pupgrade, but was ignored. 14/10 look who just lost a customer https://t.co/NP5JW8LnmW",
+  "truncated": false,
+  "display_text_range": [
+    0,
+    137
+  ],
+  "entities": {
+    "hashtags": [],
+    "symbols": [],
+    "user_mentions": [],
+    "urls": [],
+    "media": [
+      {
+        "id": 852223481894903808,
+        "id_str": "852223481894903808",
+        "indices": [
+          138,
+          161
+        ],
+        "media_url": "http://pbs.twimg.com/ext_tw_video_thumb/852223481894903808/pu/img/JWNq40ol4DXvHoUP.jpg",
+        "media_url_https": "https://pbs.twimg.com/ext_tw_video_thumb/852223481894903808/pu/img/JWNq40ol4DXvHoUP.jpg",
+        "url": "https://t.co/NP5JW8LnmW",
+        "display_url": "pic.twitter.com/NP5JW8LnmW",
+        "expanded_url": "https://twitter.com/dog_rates/status/852226086759018497/video/1",
+        "type": "photo",
+        "sizes": {
+          "thumb": {
+            "w": 150,
+            "h": 150,
+            "resize": "crop"
+          },
+          "medium": {
+            "w": 1200,
+            "h": 675,
+            "resize": "fit"
+          },
+          "small": {
+            "w": 680,
+            "h": 383,
+            "resize": "fit"
+          },
+          "large": {
+            "w": 1280,
+            "h": 720,
+            "resize": "fit"
+          }
+        }
+      }
+    ]
+  },
+  "extended_entities": {
+    "media": [
+      {
+        "id": 852223481894903808,
+        "id_str": "852223481894903808",
+        "indices": [
+          138,
+          161
+        ],
+        "media_url": "http://pbs.twimg.com/ext_tw_video_thumb/852223481894903808/pu/img/JWNq40ol4DXvHoUP.jpg",
+        "media_url_https": "https://pbs.twimg.com/ext_tw_video_thumb/852223481894903808/pu/img/JWNq40ol4DXvHoUP.jpg",
+        "url": "https://t.co/NP5JW8LnmW",
+        "display_url": "pic.twitter.com/NP5JW8LnmW",
+        "expanded_url": "https://twitter.com/dog_rates/status/852226086759018497/video/1",
+        "type": "video",
+        "sizes": {
+          "thumb": {
+            "w": 150,
+            "h": 150,
+            "resize": "crop"
+          },
+          "medium": {
+            "w": 1200,
+            "h": 675,
+            "resize": "fit"
+          },
+          "small": {
+            "w": 680,
+            "h": 383,
+            "resize": "fit"
+          },
+          "large": {
+            "w": 1280,
+            "h": 720,
+            "resize": "fit"
+          }
+        },
+        "video_info": {
+          "aspect_ratio": [
+            16,
+            9
+          ],
+          "duration_millis": 77200,
+          "variants": [
+            {
+              "bitrate": 2176000,
+              "content_type": "video/mp4",
+              "url": "https://video.twimg.com/ext_tw_video/852223481894903808/pu/vid/1280x720/_PATbQEuOoF0dueL.mp4"
+            },
+            {
+              "content_type": "application/x-mpegURL",
+              "url": "https://video.twimg.com/ext_tw_video/852223481894903808/pu/pl/pUNWBDtVBDQVOVM1.m3u8"
+            },
+            {
+              "bitrate": 256000,
+              "content_type": "video/mp4",
+              "url": "https://video.twimg.com/ext_tw_video/852223481894903808/pu/vid/320x180/LBQSmxJl5tbJWcuD.mp4"
+            },
+            {
+              "bitrate": 832000,
+              "content_type": "video/mp4",
+              "url": "https://video.twimg.com/ext_tw_video/852223481894903808/pu/vid/640x360/9SJubiIX_5LRni_C.mp4"
+            }
+          ]
+        },
+        "additional_media_info": {
+          "monetizable": false
+        }
+      }
+    ]
+  },
+  "source": "<a href=\"http://twitter.com\" rel=\"nofollow\">Twitter Web Client</a>",
+  "in_reply_to_status_id": null,
+  "in_reply_to_status_id_str": null,
+  "in_reply_to_user_id": null,
+  "in_reply_to_user_id_str": null,
+  "in_reply_to_screen_name": null,
+  "user": {
+    "id": 4196983835,
+    "id_str": "4196983835",
+    "name": "WeRateDogs\u2122\ud83c\udff3\ufe0f\u200d\ud83c\udf08",
+    "screen_name": "dog_rates",
+    "location": "\ud835\udcf6\ud835\udcee\ud835\udcfb\ud835\udcec\ud835\udcf1 \u21b4      DM YOUR DOGS",
+    "description": "Your Only Source for Professional Dog Ratings STORE: @ShopWeRateDogs | IG, FB & SC: WeRateDogs | MOBILE APP: @GoodDogsGame Business: dogratingtwitter@gmail.com",
+    "url": "https://t.co/N7sNNHAEXS",
+    "entities": {
+      "url": {
+        "urls": [
+          {
+            "url": "https://t.co/N7sNNHAEXS",
+            "expanded_url": "http://weratedogs.com",
+            "display_url": "weratedogs.com",
+            "indices": [
+              0,
+              23
+            ]
+          }
+        ]
+      },
+      "description": {
+        "urls": []
+      }
+    },
+    "protected": false,
+    "followers_count": 6889431,
+    "friends_count": 8,
+    "listed_count": 4413,
+    "created_at": "Sun Nov 15 21:41:29 +0000 2015",
+    "favourites_count": 134004,
+    "utc_offset": null,
+    "time_zone": null,
+    "geo_enabled": true,
+    "verified": true,
+    "statuses_count": 7100,
+    "lang": "en",
+    "contributors_enabled": false,
+    "is_translator": false,
+    "is_translation_enabled": false,
+    "profile_background_color": "000000",
+    "profile_background_image_url": "http://abs.twimg.com/images/themes/theme1/bg.png",
+    "profile_background_image_url_https": "https://abs.twimg.com/images/themes/theme1/bg.png",
+    "profile_background_tile": false,
+    "profile_image_url": "http://pbs.twimg.com/profile_images/948761950363664385/Fpr2Oz35_normal.jpg",
+    "profile_image_url_https": "https://pbs.twimg.com/profile_images/948761950363664385/Fpr2Oz35_normal.jpg",
+    "profile_banner_url": "https://pbs.twimg.com/profile_banners/4196983835/1525830435",
+    "profile_link_color": "F5ABB5",
+    "profile_sidebar_border_color": "000000",
+    "profile_sidebar_fill_color": "000000",
+    "profile_text_color": "000000",
+    "profile_use_background_image": false,
+    "has_extended_profile": true,
+    "default_profile": false,
+    "default_profile_image": false,
+    "following": false,
+    "follow_request_sent": false,
+    "notifications": false,
+    "translator_type": "none"
+  },
+  "geo": null,
+  "coordinates": null,
+  "place": null,
+  "contributors": null,
+  "is_quote_status": false,
+  "retweet_count": 7320,
+  "favorite_count": 20921,
+  "favorited": false,
+  "retweeted": false,
+  "possibly_sensitive": false,
+  "possibly_sensitive_appealable": false,
+  "lang": "en"
+}
