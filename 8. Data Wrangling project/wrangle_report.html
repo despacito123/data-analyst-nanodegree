@@ -13555,67 +13555,67 @@ memory usage: 313.0+ KB
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>None         745
-a             55
-Charlie       12
-Lucy          11
-Oliver        11
-Cooper        11
-Penny         10
-Tucker        10
-Lola          10
-Bo             9
-Winston        9
-the            8
-Sadie          8
-Daisy          7
-an             7
-Buddy          7
-Toby           7
-Bailey         7
-Rusty          6
-Jax            6
-Dave           6
-Milo           6
-Koda           6
-Jack           6
-Scout          6
-Oscar          6
-Bella          6
-Stanley        6
-Leo            6
-Oakley         5
-            ... 
-Blue           1
-Dudley         1
-Kuyu           1
-Combo          1
-Jackie         1
-Olaf           1
-Hanz           1
-Snoop          1
-Tycho          1
-Aldrick        1
-Skittle        1
-Clarkus        1
-Carll          1
-Cilantro       1
-Georgie        1
-Enchilada      1
-Newt           1
-Timber         1
-Tommy          1
-Kawhi          1
-Augie          1
-Dewey          1
-Jo             1
-Sprout         1
-Ralphé         1
-Harrison       1
-Lucia          1
-Mookie         1
-Leonidas       1
-Mosby          1
+<pre>None              745
+a                  55
+Charlie            12
+Lucy               11
+Cooper             11
+Oliver             11
+Lola               10
+Tucker             10
+Penny              10
+Bo                  9
+Winston             9
+the                 8
+Sadie               8
+Buddy               7
+Toby                7
+Bailey              7
+Daisy               7
+an                  7
+Oscar               6
+Leo                 6
+Scout               6
+Bella               6
+Milo                6
+Rusty               6
+Koda                6
+Jax                 6
+Dave                6
+Jack                6
+Stanley             6
+Chester             5
+                 ... 
+Bobbay              1
+Major               1
+Simba               1
+Lupe                1
+Kobe                1
+Acro                1
+Coopson             1
+Ron                 1
+Cheesy              1
+Todo                1
+Ambrose             1
+Amber               1
+Michelangelope      1
+Hubertson           1
+Traviss             1
+Godi                1
+Maude               1
+Lenox               1
+Reagan              1
+Pinot               1
+Torque              1
+Jeffri              1
+Florence            1
+Kota                1
+Malikai             1
+Kingsley            1
+Shikha              1
+Georgie             1
+Carll               1
+Derby               1
 Name: name, Length: 957, dtype: int64</pre>
 </div>
 
@@ -20981,7 +20981,7 @@ memory usage: 330.3+ KB
 <div class="prompt input_prompt">In&nbsp;[59]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">master</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="s1">&#39;tweets-cleaned.csv&#39;</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">master</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="s1">&#39;twitter_archive_master.csv&#39;</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>
 </pre></div>
 
 </div>
@@ -20996,6 +20996,7 @@ memory usage: 330.3+ KB
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">subprocess</span> <span class="k">import</span> <span class="n">call</span>
 <span class="n">call</span><span class="p">([</span><span class="s1">&#39;python&#39;</span><span class="p">,</span> <span class="s1">&#39;-m&#39;</span><span class="p">,</span> <span class="s1">&#39;nbconvert&#39;</span><span class="p">,</span> <span class="s1">&#39;wrangle_act.ipynb&#39;</span><span class="p">])</span>
+<span class="n">call</span><span class="p">([</span><span class="s1">&#39;mv&#39;</span><span class="p">,</span> <span class="s1">&#39;wrangle_act.html&#39;</span><span class="p">,</span> <span class="s1">&#39;wrangle_report.html&#39;</span><span class="p">])</span>
 </pre></div>
 
 </div>
