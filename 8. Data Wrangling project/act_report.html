@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head><meta charset="utf-8" />
-<title>wrangle_report</title><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
+<title>act_report</title><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
 
 <style type="text/css">
@@ -11775,65 +11775,30 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Data-Wrangling-of-WeRateDogs-Tweet-Archive">Data Wrangling of WeRateDogs Tweet Archive<a class="anchor-link" href="#Data-Wrangling-of-WeRateDogs-Tweet-Archive">&#182;</a></h1><h2 id="Gathering">Gathering<a class="anchor-link" href="#Gathering">&#182;</a></h2><p>Tweet archive was provided as a csv file, but some desired attributes were not present. Extended tweet information, using tweet ids in given archive, was downloaded using tweepy library and saved into json files. It was read into extended tweet and user information datasets.</p>
-<p>Image predictions were not provided, but url to download it was given. They were downloaded using requests library.</p>
-<h2 id="Assessing">Assessing<a class="anchor-link" href="#Assessing">&#182;</a></h2><p>Using visual and programatic assessement these problems were discovered:</p>
+<h1 id="Who's-the-good-boy?-Analysis-of-WeRateDogs-Tweet-Archive">Who's the good boy? Analysis of WeRateDogs Tweet Archive<a class="anchor-link" href="#Who's-the-good-boy?-Analysis-of-WeRateDogs-Tweet-Archive">&#182;</a></h1><p>A variety of debates ensue during discussions of who's the good boy. WeRateDogs on Twitter has been going a particulartly good job at providing sophisticated ratings. Today we have a chance of looking closer at wisdom they have shared over the years in their Twitter feed. This gives us an opportunity to answer some long debated questions:</p>
 <ul>
-<li><p>Tidiness:</p>
-<ul>
-<li>In tweets archive dog "stages" are datapoints, but should be observations (and categorical);</li>
-<li>tweets archive, extended tweets and image pradictions should be single dataset;</li>
-<li>(alternatively twitter related information in tweets archive and extended tweets could go into one dataset and dog related information in tweets archive and image predictions could go to another as this could be seen as two separate concenrs. In our case I think all this is part of same observation, so I decided against splitting data into two datasets);</li>
+<li>Do some breeds of dogs have more good per boys than others?</li>
+<li>Do followers agree with sophisticated expert opinion on the matter?</li>
+<li>At what "stage" are dogs the best?</li>
+<li>Do WeRateDogs followers even care about dogs or will they retweet just about anything?</li>
 </ul>
-</li>
-<li><p>Quality:</p>
-<ul>
-<li>tweets archive:<ul>
-<li><code>retweet_status_id</code> and <code>retweeted_status_user_id</code> are in scientific notation (also float64);</li>
-<li>False dog names (captured in <code>not_names</code>);</li>
-<li>Columns <code>name</code>, <code>doggo</code>, <code>floofer</code>, <code>pupper</code>, <code>puppo</code> poluted with 'None' instead of np.NaN;</li>
-<li><code>source</code> would be fine as just inner text of anchor tag;</li>
-<li><code>source</code> could be categorical;</li>
-<li><code>timestamp</code> and <code>retweeted_status_timestamp</code> are objects, but represent datetimes;</li>
-<li><code>rating_denominator</code> is not always 10;</li>
-</ul>
-</li>
-<li>image_predictions:<ul>
-<li>In column names p1, p2, p3 should be prediction1, prediction2, prediction3;</li>
-<li>In column names conf should be conficende;</li>
-<li>Predicted breed capitalization varies;</li>
-<li>Predicted breeds are with underscores insted of spaces;</li>
-</ul>
-</li>
-<li>extended_tweets:<ul>
-<li><code>in_reply_to_status_id</code> and <code>in_reply_to_user_id</code> should be integers (or at least be represented in non-scientific notation);</li>
-<li><code>source</code> has same issues as in tweets archive;</li>
-<li><code>user_id</code> has single unique value;</li>
-</ul>
-</li>
-<li>users:<ul>
-<li>Turns out all tweets came from one user. This dataset is useless;</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-<h2 id="Cleaning">Cleaning<a class="anchor-link" href="#Cleaning">&#182;</a></h2><p>Actions to address found problems:</p>
-<ul>
-<li>In image prediction column names replace p1, p2, p3 with prediction1, prediction2, prediction3;</li>
-<li>In image prediction  column names replace conf to confidence;</li>
-<li>In columns <code>name</code>, <code>doggo</code>, <code>floofer</code>, <code>pupper</code>, <code>puppo</code> replace 'None' with np.NaN;</li>
-<li>Melt <code>doggo</code>, <code>floofer</code>, <code>pupper</code>, <code>puppo</code> column into <code>stage</code> column;</li>
-<li>Merge tweet archive, extended tweets and image predictions into single dataset;</li>
-<li>Calculate <code>rating_with_denominator_10</code> column;</li>
-<li>Replace false dog names (captured in <code>not_names</code>) with np.NaN;</li>
-<li>Extract inner text of anchor tag in <code>source</code> and replace the value with it;</li>
-<li>Replace underscores in breed predictions and lowercase it;</li>
-<li>Convert <code>source</code> to category;</li>
-<li>Convert <code>timestamp</code> and <code>retweeted_status_timestamp</code> to datetime;</li>
-<li>Convert <code>retweeted_status_id</code>, <code>retweeted_status_user_id</code>, <code>in_reply_to_status_id</code> and <code>in_reply_to_user_id</code> to strings (I'd rather have them as integers, but we <a href="http://pandas.pydata.org/pandas-docs/stable/gotchas.html#support-for-integer-na">can't have NAs in integer series</a>, and these are identifier values, so representation is important);</li>
-<li>Drop <code>user_id</code>;</li>
-</ul>
+<h2 id="Methodology">Methodology<a class="anchor-link" href="#Methodology">&#182;</a></h2><p>In a dataset provided to us we have about 2000 tweets with dog stages included for some and dog breeds predicted by a neural network. Predictions are not 100% accurate of course, but we'll trust them in this article.</p>
+<p>WeRateDogs provided their sophisticated ratings of the dogs in their tweets, but doe the audience agree? We'll use retweet and favorite scores to infer that.</p>
+<p>Let's start by looking into what breeds of dogs we have in our dataset.</p>
+<p><img src="./tweet_count_by_dog_breed.png" alt="Tweet count by dog breed"></p>
+<p>Golden retrievers, labrador retrievers, pembrokes and chihuahuas are by far most often rated dogs.</p>
+<h3 id="Do-some-breeds-of-dogs-have-more-good-per-boys-than-others?">Do some breeds of dogs have more good per boys than others?<a class="anchor-link" href="#Do-some-breeds-of-dogs-have-more-good-per-boys-than-others?">&#182;</a></h3><p>Almost religious debates will ensue discussing this topic, but what do WeRateDogs think?</p>
+<p><img src="./dog_rating_by_breed.png" alt="Dog rating by breed"></p>
+<p>Most dog breeds typically get rated 10-12 out of 10. Few breeds have a slightly better of worse ratings. Out of most popular breeds samoyeds seem to be doing best job.</p>
+<h3 id="Do-followers-agree-with-sophisticated-WeRateDogs-ratings?">Do followers agree with sophisticated WeRateDogs ratings?<a class="anchor-link" href="#Do-followers-agree-with-sophisticated-WeRateDogs-ratings?">&#182;</a></h3><p>Let's look how tweet favorite counts plot against ratings.</p>
+<p><img src="./favorite_count_by_rating.png" alt="Favorite count by rating"></p>
+<p>Very clear agreement here. Especially for ratings of 10 and above.</p>
+<h3 id="At-what-&quot;stage&quot;-are-dogs-the-best?">At what "stage" are dogs the best?<a class="anchor-link" href="#At-what-&quot;stage&quot;-are-dogs-the-best?">&#182;</a></h3><p><img src="./dog_rating_by_dog_stage.png" alt="Dog rating by dog stage"></p>
+<p>No winners in this department. Puppers may be a little behind, but at all stages dogs tend to be consistently rated 10 and above.</p>
+<h3 id="Do-WeRateDogs-followers-even-care-about-dogs-or-will-they-retweet-just-about-anything?">Do WeRateDogs followers even care about dogs or will they retweet just about anything?<a class="anchor-link" href="#Do-WeRateDogs-followers-even-care-about-dogs-or-will-they-retweet-just-about-anything?">&#182;</a></h3><p><img src="./retweet_counts_by_wether_picture_had_a_dog_in_it.png" alt="Retweet counts by wether picture had a dog in it">
+<img src="./favorite_counts_by_wether_picture_had_a_dog_in_it.png" alt="Favorite counts by wether picture had a dog in it"></p>
+<p>So followers may retweet just about anything, but they tend to favorite dogs more often than other things WeRateDogs posts.</p>
+<h2 id="Conclusions">Conclusions<a class="anchor-link" href="#Conclusions">&#182;</a></h2><p>Even though some dog breeds seem to get slightly better ratings, all breeds present plenty of strong contenders. Dogs are good at all "stages". Followers of WeRateDogs generally agree with sophisticated expert ratings and can be counted on spreading the word about good boys.</p>
 
 </div>
 </div>
